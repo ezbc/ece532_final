@@ -42,8 +42,25 @@ valid = data.sub_valid;
 
 desc = train(:, 3);
 
+
+% Grab every word as a keyword
+all_words = false;
+if all_words
+    words = {' '};
+    for i = 1:N
+        text = strsplit(desc{i,1}{1}, ' ');
+        for j = 1:length(text)
+            % Remove periods
+            text(j) = strrep(text(j), '.', '');
+            % Add text to words
+            words = [words, text(j)];
+        end
+    end
+    keywords = unique(words);
+end
+
 % List keywords to count
-keywords = {'math' 'mathematical' 'systems' 'analyst' 'and'};
+%keywords = {'math' 'mathematical' 'systems' 'analyst' 'and'};
 
 % Get frequencies of keywords, or A matrix
 freq_matrix = zeros(N, length(keywords));
