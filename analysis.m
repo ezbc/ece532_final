@@ -60,7 +60,7 @@ if all_words
 end
 
 % List keywords to count
-keywords = {'math' 'mathematical' 'systems' 'analyst' 'and'};
+%keywords = {'math' 'mathematical' 'systems' 'analyst' 'and'};
 
 % Get frequencies of keywords, or A matrix
 freq_matrix = zeros(N, length(keywords));
