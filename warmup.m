@@ -13,6 +13,7 @@ clear data;
 %% WarmUp
 desc1.id = 1; %random pedagogical choice 1
 desc2.id = 10;
+desc3.id = 100;
 
 %count unique words
 fprintf('desc1:\n');
@@ -39,10 +40,34 @@ for i = 1:length(desc2.uwords);
     fprintf('%d = %s\n', desc2.a(i), desc2.uwords{i});
 end
 
+fprintf('desc3:\n');
+desc3.words = strsplit(test.FullDescription{desc3.id});
+desc3.words = strrep(desc3.words, ',','');
+desc3.words = strrep(desc3.words, '.','');
+desc3.words = lower(desc3.words);
+desc3.words = sort(desc3.words); 
+desc3.uwords = unique(desc3.words);
+for i = 1:length(desc3.uwords);
+    desc3.a(i) = sum( strcmp(desc3.words, desc3.uwords{i}) );
+    fprintf('%d = %s\n', desc3.a(i), desc3.uwords{i});
+end
+
+% Define common words that should be ignored in frequency matrix
+ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
+          'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
+          'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'};
+
+% remove the ignored words
+%ignore_indices = find(ismember(desc1.uwords, ignore));
+%desc1.uwords(ignore_indices) = [];
+%ignore_indices = find(ismember(desc2.uwords, ignore));
+%desc2.uwords(ignore_indices) = [];
+
 %combine word lists
 comb = [desc1.uwords, desc2.uwords];
 comb = unique(comb);
 comb = sort(comb);
+
 i1 = 1; %per-description counters
 i2 = 1;
 A = zeros(2,length(comb));
@@ -57,6 +82,18 @@ for i = 1:length(comb);
     end
 end
 
+% Display the frequency table
+fprintf('\n\nFreq table 1\n')
+for i = 1:11;
+    disp([desc1.uwords{i} ' & ' num2str(A(1,i)) ' \\'])
+end
+
+fprintf('\n\nFreq table 2\n')
+for i = 1:11;
+    disp([desc2.uwords{i} ' & ' num2str(A(2,i)) ' \\'])
+end
+
+fprintf('\n\nb matrix\n')
 b = [test.SalaryNormalized(desc1.id); test.SalaryNormalized(desc2.id)];
 xhat = pinv(A)*b;
 [xsrt,isrt] = sort(xhat,'descend');
@@ -68,11 +105,29 @@ for i = 1:length(comb);
 %     fprintf('%d: %3.4f = "%s" from [%s]\n', i, xsrt(i), comb{i}, foundIn);
 
 %     fprintf('%d: %3.4f = "%s" from [%d %d]\n', i, xsrt(i), comb{i}, A(1,i), A(2,i));
-    fprintf('%d: %3.4f = "%s" from [%d %d]\n', i, xsrt(i), comb{isrt(i)}, A(1,isrt(i)), A(2,isrt(i)));
+    if i < 11
+        fprintf('%3.4f & "%s" from [%d, %d] \\\\ \n', xsrt(i), comb{isrt(i)}, A(1,isrt(i)), A(2,isrt(i)));
+    end
 end
 
+% ---------------------------------------
+% Now predict salary of a new description
+% ---------------------------------------
 
+i1 = 1; %per-description counters
+A = zeros(1,length(comb));
+for i = 1:length(comb);
+    if i1 <= length(desc3.uwords) && strcmp( comb{i}, desc3.uwords{i1} )
+        A(1,i) = desc3.a(i1);
+        i1 = i1+1;
+    end
+end
 
+b = [test.SalaryNormalized(desc3.id)];
+
+bhat = A*xhat;
+
+disp(['Norm of b - bhat = ' norm(b-bhat)])
 
 
 
