@@ -16,6 +16,18 @@ save('data/test.mat', 'sub_test');
 save('data/train.mat', 'sub_train');
 save('data/valid.mat', 'sub_valid');
 
+load('data/test.mat');
+load('data/train.mat');
+load('data/valid.mat');
+
+warmup_test = sub_test([100], :);
+warmup_train = sub_train([1 10], :);
+warmup_valid = sub_valid([1 10 100], :);
+
+save('data/warmup_test.mat', 'warmup_test');
+save('data/warmup_train.mat', 'warmup_train');
+save('data/warmup_valid.mat', 'warmup_valid');
+
 %train = load('data/train.m');
 %test = load('data/test.m');
 %valid = load('data/valid.m');

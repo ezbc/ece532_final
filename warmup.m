@@ -2,22 +2,22 @@
 clc; clear all; close all; format compact;
 
 %% Load Data
-data = load('data/train.mat');
-train = data.sub_train;
-data = load('data/test.mat');
-test = data.sub_test;
-data = load('data/valid.mat');
-valid = data.sub_valid;
+data = load('data/warmup_train.mat');
+train = data.warmup_train;
+data = load('data/warmup_test.mat');
+test = data.warmup_test;
+data = load('data/warmup_valid.mat');
+valid = data.warmup_valid;
 clear data;
 
 %% WarmUp
 desc1.id = 1; %random pedagogical choice 1
-desc2.id = 10;
-desc3.id = 100;
+desc2.id = 2;
+desc3.id = 1;
 
 %count unique words
 fprintf('desc1:\n');
-desc1.words = strsplit(test.FullDescription{desc1.id});
+desc1.words = strsplit(train.FullDescription{desc1.id});
 desc1.words = strrep(desc1.words, ',','');
 desc1.words = strrep(desc1.words, '.','');
 desc1.words = lower(desc1.words);
@@ -29,7 +29,7 @@ for i = 1:length(desc1.uwords);
 end
 
 fprintf('desc2:\n');
-desc2.words = strsplit(test.FullDescription{desc2.id});
+desc2.words = strsplit(train.FullDescription{desc2.id});
 desc2.words = strrep(desc2.words, ',','');
 desc2.words = strrep(desc2.words, '.','');
 desc2.words = lower(desc2.words);
@@ -94,7 +94,7 @@ for i = 1:11;
 end
 
 fprintf('\n\nb matrix\n')
-b = [test.SalaryNormalized(desc1.id); test.SalaryNormalized(desc2.id)];
+b = [train.SalaryNormalized(desc1.id); train.SalaryNormalized(desc2.id)];
 xhat = pinv(A)*b;
 [xsrt,isrt] = sort(xhat,'descend');
 for i = 1:length(comb);

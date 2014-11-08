@@ -25,17 +25,17 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     competition whose sponsor, Adzuna, had a database of job listings of which
     only half provided salary information (the winner recieved \$3000).  As
     applicants will more likely apply to descriptions that give a salary,
-    Adzuna"s placement rate (and hence revenue) is improved if they can provide
+    Adzuna``s placement rate (and hence revenue) is improved if they can provide
     an estimated salary for those descriptions that did not originally include
     one.  (The employee recruting business is structured so that Adzuna
-    generally can"t directly ask the companies to provide salary estimates.)
+    generally can``t directly ask the companies to provide salary estimates.)
     This is challenging from the legal standpoint, as grossly incorrect
     salaries may expose Adzuna to claims from applicants and companies, and
-    applicant experience, since Adzuna"s estimates must seem plausible to
+    applicant experience, since Adzuna``s estimates must seem plausible to
     applicants before they will be willing to spend the time applying.
 
     While Adzuna could manually estimate these salaries, scalability encourages
-    throwing computers at the problem.  In this lab we will be using Adzuna"s
+    throwing computers at the problem.  In this lab we will be using Adzuna``s
     job description and salary datasets, divided into training and test sets.
     These descriptions vary in word count, industry, employment level, and
     company location, while the salaries are the mean of the provided salary
@@ -45,10 +45,10 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     occurrences of individual words and associate them to salaries; here each
     word is a feature and as there are many descriptive words the resulting
     matrices will be sparse.  Other feature choices may be individual word
-    length, occurrences of word pairs or triplets (ie "technical
-    communication"), n-grams (sequences of n characters), and many others.
-    Note that it is common to ignore stop words like "the","a","it","you","we",
-    etc... because they add little information.
+    length, occurrences of word pairs or triplets (ie ``technical
+    communication``), n-grams (sequences of n characters), and many others.
+    Note that it is common to ignore stop words like
+    ``the",``a",``it",``you",``we", etc... because they add little information.
 
 % ------------------------------------------------------------------------------
 \section{Warm-Up}
@@ -190,24 +190,49 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \begin{equation*}
         \bm{\hat{x}} = 
         \begin{blockarray}{[c] l}
-            1819.6517 & "be" from [0, 6] \\
-            1730.9558 & "and" from [1, 5] \\
-            1427.6805 & "for" from [1, 4] \\
-            1250.2887 & "engineering" from [3, 2] \\
-            1213.1011 & "must" from [0, 4] \\
-            1213.1011 & "will" from [0, 4] \\
-            1213.1011 & "you" from [0, 4] \\
-            909.8258 & "an" from [0, 3] \\
-            909.8258 & "subsea" from [0, 3] \\
-            909.8258 & "the" from [0, 3] \\
-            732.4341 & "modelling" from [2, 1] \\
+            1819.6517 & ``be" from [0, 6] \\
+            1730.9558 & ``and" from [1, 5] \\
+            1427.6805 & ``for" from [1, 4] \\
+            1250.2887 & ``engineering" from [3, 2] \\
+            1213.1011 & ``must" from [0, 4] \\
+            1213.1011 & ``will" from [0, 4] \\
+            1213.1011 & ``you" from [0, 4] \\
+            909.8258 & ``an" from [0, 3] \\
+            909.8258 & ``subsea" from [0, 3] \\
+            909.8258 & ``the" from [0, 3] \\
+            732.4341 & ``modelling" from [2, 1] \\
         \vdots & \vdots
         \end{blockarray}
     \end{equation*}
 
     For two samples, it should not be surprising that the most heavily-weighted
-    words are unique to each description. Next we wish to predict the salary of
-    another description using our $\bm{\hat{x}}$. 
+    words are unique to each description. 
+    
+    % --------------------------------------------------------------------------
+    % Activity 
+    % --------------------------------------------------------------------------
+    \begin{center} 
+        
+        \fbox{\begin{minipage}{30em}
+
+                {\bf \large Activity 1} \\
+
+            Construct the above $\bm{A}$ and $\bm{b}$ matrices using the
+            1$^{\rm st}$ and 2$^{\rm nd}$ descriptions in the warm-up data,
+            warmup\_train.mat. $\bm{A}$ should be a 2$\times m$ matrix where
+            $m$ is the number of unique words between the two descriptions.
+            $\bm{b}$ should be a 2$\times$1 matrix. Determine a solution for
+            $\bm{\hat{x}}$.
+
+            \end{minipage}
+        }
+        
+    \end{center}
+    % --------------------------------------------------------------------------
+    % --------------------------------------------------------------------------
+    
+    Next we wish to predict the salary of another description using our
+    $\bm{\hat{x}}$. 
 
     \begin{lstlisting}
     
@@ -227,6 +252,26 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         www.caterer.com/JobSeeking/ClusterRevenueManager_job****
 
     \end{lstlisting} having a salary of \$45,000.
+    
+    % --------------------------------------------------------------------------
+    % Activity 
+    % --------------------------------------------------------------------------
+    \begin{center} 
+        
+        \fbox{\begin{minipage}{30em}
+
+            {\bf \large Activity 2} \\
+
+            Use your solution for $\bm{\hat{x}}$ in Activity 1 to estimate the
+            salary of the third description in the warm-up test data,
+            warmup\_test.mat.
+
+            \end{minipage}
+        }
+        
+    \end{center}
+    % --------------------------------------------------------------------------
+    % --------------------------------------------------------------------------
 
     We now construct the matrix $\bm{A}$ for this description. This matrix will
     only contain frequencies of words that were present in the previous two
