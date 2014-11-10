@@ -26,12 +26,12 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     relation between job descriptions and salaries.  This topic was the focus
     of a \href{http://www.kaggle.com/c/job-salary-prediction}{Kaggle}
     competition whose sponsor, Adzuna, had a database of job listings of which
-    only half provided salary information (the winner recieved \$3000).  As
+    only half provided salary information (the winner received \$3000).  As
     applicants will more likely apply to descriptions that give a salary,
     Adzuna's placement rate (and hence revenue) is improved if they can provide
     an estimated salary for those descriptions that did not originally include
-    one.  (The employee recruting business is structured so that Adzuna
-    generally can't directly ask the companies to provide salary estimates.)
+    one. The employee recruiting business is structured so that Adzuna
+    generally can't directly ask the companies to provide salary estimates.
     This is challenging from the legal standpoint, as grossly incorrect
     salaries may expose Adzuna to claims from applicants and companies, and
     applicant experience, since Adzuna's estimates must seem plausible to
@@ -42,16 +42,16 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     job description and salary datasets, divided into training and test sets.
     These descriptions vary in word count, industry, employment level, and
     company location, while the salaries are the mean of the provided salary
-    range.  The variability in description content leads to a notoriously
-    sparse matrices, so we will be interested in the tradeoffs of various
-    feature descriptors.  The naive approach to this problem is to count the
+    range.  The variability in description content leads to notoriously sparse
+    matrices, so we will be interested in the tradeoffs of various feature
+    descriptors.  The naive approach to this problem is to count the
     occurrences of individual words and associate them to salaries; here each
     word is a feature and as there are many descriptive words the resulting
     matrices will be sparse.  Other feature choices may be individual word
     length, occurrences of word pairs or triplets (ie ``technical
-    communication``), n-grams (sequences of n characters), and many others.
-    Note that it is common to ignore stop words like
-    ``the",``a",``it",``you",``we", etc... because they add little information.
+    communication``), n-grams (sequences of n characters), and many others. It
+    is common to ignore stop words like ``the",``a",``it",``you",``we", etc.
+    because they add little information.
 
 % ------------------------------------------------------------------------------
 \section{Warm-Up}
@@ -90,28 +90,38 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     
     \end{lstlisting} having a salary of \$85,000.
 
-    One method to predict the salary from another description is least squares estimation.
-    Least squares estimation can be thought of as an optimization problem which aims to minimize the error estimated and measured data.
-    In our case, we want to predict salaries from the words contained in the job descriptions.
-    For now, let's consider only occurrences of ``analyse" in the description. 
-    If you plot the number of occurrences against the job salary, you might produce something like
+    One method to predict the salary from another description is least squares
+    estimation.  Least squares estimation can be thought of as an optimization
+    problem which aims to minimize the error estimated and measured data.  In
+    our case, we want to predict salaries from the words contained in the job
+    descriptions.  For now, let's consider only occurrences of ``analyse" in
+    the description.  If you plot the number of occurrences against the job
+    salary, you might produce something like
     
     \begin{center}
     \includegraphics[width=\linewidth]{figLSE}
     \end{center}
     
-    In solving the least squared problem, we're looking for the line which passes nearest to all of the points, as measured by the Euclidean distance, or
+    In solving the least squared problem, we're looking for the line which
+    passes nearest to all of the points, as measured by the Euclidean distance,
+    or
+
     \begin{equation}
     error = \sqrt{ (x_i - x_L)^2 + (y_i - y_L)^2} 
     \end{equation}
  
-    If we considered two words, say ``analyse" and ``qualified", we would now have a 3D space to find our least squared solution with one axis being occurrences of ``analyse," another ``qualified," and the third the salary.
-    Here, our solution will be a plane that slices the 3D space; adding more words - or features as they're more generally described - increases the dimensionality of this space, and our solution becomes a hyperplane.
-    In all cases, we want to minimize the distance from all of the data points to the lower-dimensional estimate.
+    If we considered two words, say ``analyse" and ``qualified", we would now
+    have a 3D space to find our least squared solution with one axis being
+    occurrences of ``analyse," another ``qualified," and the third the salary.
+    Here, our solution will be a plane that slices the 3D space; adding more
+    words - or features as they're more generally described - increases the
+    dimensionality of this space, and our solution becomes a hyperplane.  In
+    all cases, we want to minimize the distance from all of the data points to
+    the lower-dimensional estimate.
     
-    We would like to determine the words that best predict salary, or even better the frequency of the words which best
-    predict salary. Here we show the 11 most common words for each description:
-
+    We would like to determine the words that best predict salary, or even
+    better the frequency of the words which best predict salary. Here we show
+    the 11 most common words for each description:
 
     \begin{center}
     \begin{minipage}[t]{.4\textwidth}
@@ -179,10 +189,11 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         \bm{b} = \bm{Ax}
     \end{equation}
 
-    \noindent where $\bm{x}$ contains the weights (importance) of each word
-    in predicting the salary of the job. We can find a solution for
-    $\bm{x}$, $\bm{\hat{x}}$, by minimizing the residual errors between $\bm{b}$ and
+    \noindent where $\bm{x}$ contains the weights (importance) of each word in
+    predicting the salary of the job. We can find a solution for $\bm{x}$,
+    $\bm{\hat{x}}$, by minimizing the residual errors between $\bm{b}$ and
     $\bm{Ax}$.  This is the same as minimizing the sum of squared residuals,
+
     \begin{equation}
         \|\bm{b} - \bm{Ax}\|^2_2
     \end{equation}
@@ -191,12 +202,17 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \begin{equation}
         \bm{\hat{x}} = (\bm{A}^{T}\bm{A})^{-1}\bm{A}^T\bm{b}
     \end{equation}
-    when A is positive semidefinite (which is to say that it is invertible).
+
+    when $\bm{A}$ is positive semidefinite, or rather, invertible.
     
-    In cases when A is not positive semidefinite, as in the A derived from the 
-    word counts above, we can use the right psuedo-inverse of A.  In Matlab this is
-    \begin{equation}
-    \hat{x} = \texttt{pinv}(A)*b % I don't want to introduce the svd in the warmup, but the inverse does not work...
+    In cases when $\bm{A}$ is not positive semidefinite, as in the $\bm{A}$
+    derived from the word counts above, we can use the right psuedo-inverse of
+    $\bm{A}$.  In Matlab this is 
+    
+    \begin{equation} 
+        \bm{\hat{x}} = \texttt{pinv}(\bm{A})*\bm{b}
+        % I don't want to introduce the svd in the warmup, but the inverse does
+        %not work...  
     \end{equation}
 
     Using the solution for $\bm{\hat{x}}$, our least-squares solution to this
@@ -220,10 +236,10 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         \end{blockarray}
     \end{equation*}
 
-    The bracketed numbers give the number of occurrences of that word in each of
-    the descriptions; with only two samples it should not be surprising that 
+    The bracketed numbers give the number of occurrences of that word in each
+    of the descriptions; with only two samples it should not be surprising that
     the most heavily-weighted words are unique to each description.  But notice
-    how some words are identically-weighted and that from these 11 `most 
+    how some words are identically-weighted and that from these 11 `most
     important' words, none of them are highly descriptive.
     
     % --------------------------------------------------------------------------
@@ -231,14 +247,15 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     % --------------------------------------------------------------------------
     \begin{center} 
         
-        \fbox{\begin{minipage}{40em}
-            {\bf \large Activity 1} \\
-            Construct the above $\bm{A}$ and $\bm{b}$ matrices using the
-            1$^{\rm st}$ and 2$^{\rm nd}$ descriptions in the warm-up data,
-            warmup\_train.mat. $\bm{A}$ should be a 2$\times m$ matrix where
-            $m$ is the number of unique words between the two descriptions.
-            $\bm{b}$ should be a 2$\times$1 matrix. Verify the above solution
-            for $\bm{\hat{x}}$.
+        \fbox{\begin{minipage}{40em} {\bf \large Activity 1} \\ Construct the
+                above $\bm{A}$ and $\bm{b}$ matrices using the 1$^{\rm st}$ and
+                2$^{\rm nd}$ descriptions in the warm-up data,
+                warmup\_train.mat. $\bm{A}$ should be a 2$\times m$ matrix
+                where $m$ is the number of unique words between the two
+                descriptions.  $\bm{b}$ should be a 2$\times$1 matrix. Can you
+                reproduce the above solution for $\bm{\hat{x}}$? Report on the
+                uniqueness of the solution for $\bm{\hat{x}}$ in this problem.
+                Support your conclusion.\\
             
             The following commands may be helpful:
             \begin{center}
@@ -303,8 +320,16 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     the matrix $\bm{b}$. Our estimated salary will be stored in $\bm{\hat{b}}$,
     which we estimate from Equation~\ref{eq:linsolve}. \\
 
-    The estimated salary is \$3032.80. About \$41,967 different from the true %when I run I find this; I think Elijah missed the decimal?
-    salary associated with the job. How can we improve our analysis?
+    The estimated salary is \$3032.80. About \$41,967 different from the true
+    salary associated with the job. How can we improve our analysis? We have
+    computed which words employers use to indicate high salaries, can we use
+    this to advise applicants what salary they should apply for given their
+    resume? Would Adzuna likely use this technique of linear least squares? In
+    the following sections we will introduce ways to include many more
+    descriptions in our analysis, and derive more accurate predictors of a
+    salary based on the description.
+
+    %when I run I find this; I think Elijah missed the decimal?  
 
 %stuff, conclusion:
 %Ok, now let's turn it around:
