@@ -52,16 +52,16 @@ for i = 1:length(desc3.uwords);
     fprintf('%d = %s\n', desc3.a(i), desc3.uwords{i});
 end
 
-% % Define common words that should be ignored in frequency matrix
-ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
-          'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
-          'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'};
-
-% remove the ignored words
-ignore_indices = find(ismember(desc1.uwords, ignore));
-desc1.uwords(ignore_indices) = [];
-ignore_indices = find(ismember(desc2.uwords, ignore));
-desc2.uwords(ignore_indices) = [];
+% % % Define common words that should be ignored in frequency matrix
+% ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
+%           'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
+%           'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'};
+% 
+% % remove the ignored words
+% ignore_indices = find(ismember(desc1.uwords, ignore));
+% desc1.uwords(ignore_indices) = [];
+% ignore_indices = find(ismember(desc2.uwords, ignore));
+% desc2.uwords(ignore_indices) = [];
 
 %combine word lists
 comb = [desc1.uwords, desc2.uwords];
@@ -81,55 +81,68 @@ for i = 1:length(comb);
         i2 = i2+1;
     end
 end
-
-% Display the frequency table
-fprintf('\n\nFreq table 1\n')
-for i = 1:11;
-    disp([desc1.uwords{i} ' & ' num2str(A(1,i)) ' \\'])
-end
-
-fprintf('\n\nFreq table 2\n')
-for i = 1:11;
-    disp([desc2.uwords{i} ' & ' num2str(A(2,i)) ' \\'])
-end
-
+% 
+% % Display the frequency table
+% fprintf('\n\nFreq table 1\n')
+% for i = 1:11;
+%     disp([desc1.uwords{i} ' & ' num2str(A(1,i)) ' \\'])
+% end
+% 
+% fprintf('\n\nFreq table 2\n')
+% for i = 1:11;
+%     disp([desc2.uwords{i} ' & ' num2str(A(2,i)) ' \\'])
+% end
+% 
 fprintf('\n\nb matrix\n')
 b = [train.SalaryNormalized(desc1.id); train.SalaryNormalized(desc2.id)];
-xhat = pinv(A)*b;
-[xsrt,isrt] = sort(xhat,'descend');
-for i = 1:length(comb);
-    
-%     foundIn = '';
-%     if A(1,i) ~= 0; foundIn = [foundIn,'d1 ']; end;
-%     if A(2,i) ~= 0; foundIn = [foundIn,'d2']; end;
-%     fprintf('%d: %3.4f = "%s" from [%s]\n', i, xsrt(i), comb{i}, foundIn);
+% xhat = pinv(A)*b;
+xhat = (A'*A)\A'*b;
 
-%     fprintf('%d: %3.4f = "%s" from [%d %d]\n', i, xsrt(i), comb{i}, A(1,i), A(2,i));
-    if i < 11
-        fprintf('%3.4f & "%s" from [%d, %d] \\\\ \n', xsrt(i), comb{isrt(i)}, A(1,isrt(i)), A(2,isrt(i)));
-    end
-end
-
-% ---------------------------------------
-% Now predict salary of a new description
-% ---------------------------------------
+% [xsrt,isrt] = sort(xhat,'descend');
+% for i = 1:length(comb);
+%     
+% %     foundIn = '';
+% %     if A(1,i) ~= 0; foundIn = [foundIn,'d1 ']; end;
+% %     if A(2,i) ~= 0; foundIn = [foundIn,'d2']; end;
+% %     fprintf('%d: %3.4f = "%s" from [%s]\n', i, xsrt(i), comb{i}, foundIn);
+% 
+% %     fprintf('%d: %3.4f = "%s" from [%d %d]\n', i, xsrt(i), comb{i}, A(1,i), A(2,i));
+%     if i < 11
+%         fprintf('%3.4f & "%s" from [%d, %d] \\\\ \n', xsrt(i), comb{isrt(i)}, A(1,isrt(i)), A(2,isrt(i)));
+%     end
+% end
+% 
+% % ---------------------------------------
+% % Now predict salary of a new description
+% % ---------------------------------------
 
 i1 = 1; %per-description counters
-A = zeros(1,length(comb));
+A3 = zeros(1,length(comb));
 for i = 1:length(comb);
     if i1 <= length(desc3.uwords) && strcmp( comb{i}, desc3.uwords{i1} )
-        A(1,i) = desc3.a(i1);
-        disp('Hello')
+        A3(1,i) = desc3.a(i1);
         i1 = i1+1;
     end
 end
 
-b = [test.SalaryNormalized(desc3.id)];
+bhat = A3*xhat
 
-bhat = A*xhat;
-
-disp(['Norm of b - bhat = ' num2str(norm(b-bhat))])
+disp(['Norm of b - bhat = ' num2str(norm(test.SalaryNormalized(desc3.id)-bhat))])
 
 
 
 
+%% LSE figure
+x = 0:.01:1;
+data = randn(1,length(x)) + .5;
+fit = polyfit(x,data,1);
+y = polyval(fit,x);
+
+msz = 20; lwd = 3;
+figure(); hold on;
+plot(x, data, 'b.','MarkerSize',msz);
+plot(x, y, 'r-','LineWidth',lwd);
+xlim([0,1]); ylim([0,1]);
+fs = 20;
+ylabel('Normalized Salary','FontSize',fs); xlabel('Normalized Occurrences of `analyse`','FontSize',fs);
+set(gca,'FontSize',fs);
