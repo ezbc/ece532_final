@@ -52,16 +52,16 @@ for i = 1:length(desc3.uwords);
     fprintf('%d = %s\n', desc3.a(i), desc3.uwords{i});
 end
 
-% Define common words that should be ignored in frequency matrix
+% % Define common words that should be ignored in frequency matrix
 ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
           'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
           'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'};
 
 % remove the ignored words
-%ignore_indices = find(ismember(desc1.uwords, ignore));
-%desc1.uwords(ignore_indices) = [];
-%ignore_indices = find(ismember(desc2.uwords, ignore));
-%desc2.uwords(ignore_indices) = [];
+ignore_indices = find(ismember(desc1.uwords, ignore));
+desc1.uwords(ignore_indices) = [];
+ignore_indices = find(ismember(desc2.uwords, ignore));
+desc2.uwords(ignore_indices) = [];
 
 %combine word lists
 comb = [desc1.uwords, desc2.uwords];
@@ -119,6 +119,7 @@ A = zeros(1,length(comb));
 for i = 1:length(comb);
     if i1 <= length(desc3.uwords) && strcmp( comb{i}, desc3.uwords{i1} )
         A(1,i) = desc3.a(i1);
+        disp('Hello')
         i1 = i1+1;
     end
 end
@@ -127,7 +128,7 @@ b = [test.SalaryNormalized(desc3.id)];
 
 bhat = A*xhat;
 
-disp(['Norm of b - bhat = ' norm(b-bhat)])
+disp(['Norm of b - bhat = ' num2str(norm(b-bhat))])
 
 
 
