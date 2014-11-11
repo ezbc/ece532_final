@@ -321,13 +321,14 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     which we estimate from Equation~\ref{eq:linsolve}. \\
 
     The estimated salary is \$3032.80. About \$41,967 different from the true
-    salary associated with the job. How can we improve our analysis? We have
-    computed which words employers use to indicate high salaries, can we use
-    this to advise applicants what salary they should apply for given their
-    resume? Would Adzuna likely use this technique of linear least squares? In
-    the following sections we will introduce ways to include many more
-    descriptions in our analysis, and derive more accurate predictors of a
-    salary based on the description.
+    salary associated with the job. Would Adzuna likely use this technique of
+    linear least squares? Consider how populated our $\bm{A}$ matrix is for the
+    third description. Is the matrix well-populated or sparsely-populated?
+    Based on your intuition, are all of the words in $\bm{\hat{x}}$ likely to
+    be good predictors of salary? How might paring down the keywords in our
+    data matrix benefit us? In the following sections we will introduce ways to
+    include many more descriptions in our analysis, and derive more accurate
+    predictors of a salary based on the description.
 
     %when I run I find this; I think Elijah missed the decimal?  
 
