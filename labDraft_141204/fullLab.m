@@ -2,11 +2,11 @@
 clc; clear all; close all; format compact;
 
 %% Load Data
-data = load('data/warmup_train.mat');
+data = load('../data/warmup_train.mat');
 train = data.warmup_train;
-data = load('data/warmup_test.mat');
+data = load('../data/warmup_test.mat');
 test = data.warmup_test;
-data = load('data/warmup_valid.mat');
+data = load('../data/warmup_valid.mat');
 valid = data.warmup_valid;
 clear data;
 

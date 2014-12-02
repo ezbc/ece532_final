@@ -179,12 +179,11 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \begin{equation*}
         \bm{b} = 
         \begin{bmatrix}
-        2500\\
+        25000\\
         85000
         \end{bmatrix}
     \end{equation*}
-
-    with the first two corresponding to the two occurrences of `****k' in the first descripton and the later 1, 5 column to occurrences of `and' in both descriptions.
+    with the first 2 corresponding to the two occurrences of `****k' in the first descripton and the later 1, 5 column to occurrences of `and' in both descriptions.
 
 
     We can then set up our problem as 
@@ -205,8 +204,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \begin{equation}
         \bm{\hat{x}} = (\bm{A}^{T}\bm{A})^{-1}\bm{A}^T\bm{b}
     \end{equation}
-
-    when $\bm{A}$ is positive semidefinite, or rather, invertible.
+    when $\bm{A}$ is positive semidefinite and invertible.
     
     In cases when $\bm{A}$ is not positive semidefinite, as in the $\bm{A}$
     derived from the word counts above, we can use the right psuedo-inverse of
@@ -218,8 +216,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         %not work...  
     \end{equation}
 
-    Using the solution for $\bm{\hat{x}}$, our least-squares solution to this
-    problem, $\bm{\hat{x}}$ is:
+    The least squares solution to this problem is
 
     \begin{equation*}
         \bm{\hat{x}} = 
@@ -323,7 +320,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     the matrix $\bm{b}$. Our estimated salary will be stored in $\bm{\hat{b}}$,
     which we estimate from Equation~\ref{eq:linsolve}. \\
 
-    The estimated salary is \$3032.80. About \$41,967 different from the true
+    The estimated salary is \$3,032.80. About \$41,967 different from the true
     salary associated with the job. Would Adzuna likely use this technique of
     linear least squares? Consider how populated our $\bm{A}$ matrix is for the
     third description. Is the matrix well-populated or sparsely-populated?
@@ -343,9 +340,19 @@ Solve same 10 problem with Lasso
 Provide A, A inv, and xhat for a larger problem?
 
 \section{Using the Results...Ben}
+We've seen that accurate salary prediction is a function of the algorithm and the size of the training set, and while there are many additional improvements, let's conclude by exploring some results of this analysis.
 
-%Ok, now let's turn it around:
-%We've computed which words employers use to indicate high salaries, can we use this to advise applicants what salary their resume is applying for.
+Recall that the basic form of the least squares problem is $\bm{b = Ax}$.
+We formed $\bm{A}$ by counting the number of occurrences of each word in the job description and placed the corresponding salaries in $\bm{b}$.
+$\bm{A}$ can be viewed as a mapping from word-weight space (home of $\bm{x}$) to salary space, with the reverse mapping coming from $\bm{A}$'s inverse.
+$\bm{x}$ was then the weight or descriptiveness of each word - how useful its number of occurrences were in predicting the correct salary.
+The descriptivity of descriptions can be compared by computing $\bm{A(i,:)*x}$ for the $\bm{i}$th descriptions.
+
+$\bm{A}$ is a linear operator, so if a particular applicant wants to make \$50,000, we can determine which words they should look for when reading descriptions by computing $\bm{pinv(A)*50000}$.
+If the applicant includes these descriptive words in their objective statement or elsewhere in their resume, it is reasonable to expect that their application will be successful (though this is a different - if similar - problem).
+We can then use the $\bm{A}$ and $\bm{x}$ computed from the training data to analyze a resume and suggest what salary their resume implicitly seeks.
+
+clustering graph...
 
 
 
