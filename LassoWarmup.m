@@ -26,6 +26,7 @@ all_words = true;
 if all_words
     words = {'RemoveTheInitialWordFromwords'};
     for i = 1:N
+        desc = descTrain.FullDescription{i};
         text = strsplit(descTrain.FullDescription{i}, ' ');
         for j = 1:length(text)
             %Remove all non English letters characters and numbers
@@ -41,6 +42,12 @@ if all_words
     words = words(2:end); %remove the initial
     keywords = unique(words);
 end
+ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
+          'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
+          'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'...
+          '', 'able','all','as','but','by','cv','every','from','get','had','if','its',...
+          'not','on','only','our','put','per','so','that','this','what','will','year','years','your'};
+keywords = setdiff(keywords, ignore);
 keywords = sort(keywords);
 toc
 
@@ -82,9 +89,15 @@ end
 
 %% Lasso It
 tic
-lambda = 10; 
-maxIter = 100;
-eps = 10^-6;
+% lambda = 10000; %gives two [and, the]
+% lambda = 1000; %gives 11
+% lambda = 500; %gives 17
+% lambda = 400; %18
+% lambda = 300; %22, 10000+
+lambda = 250; 
+% lambda = 200; %30+, 10000+ iterations
+maxIter = 10000;
+eps = 10^-3;
 % xhat = Lasso( freq_matrixTrain, lambda,salaryTrain,maxIter,eps );
 % xhat = Lasso2( freq_matrixTrain, lambda,salaryTrain,maxIter,eps ); 
 A = freq_matrixTrain; b = salaryTrain;
@@ -100,7 +113,7 @@ while( iter < maxIter && delta > eps)
     y = xhat + alpha*A'*(b-A*xhat);
     xnext = sign(y) .* max([abs(y) - alpha*lambda,zeros(size(A,2),1)],[],2);
     iter = iter+ 1;
-    delta = norm(xnext - xhat)
+    delta = norm(xnext - xhat);
     xhat = xnext;
 end
 if iter >= maxIter;
@@ -118,5 +131,6 @@ end
 
 %get error of predicted salary
 % error = norm(predSalaryTest - salaryTest)
+
 
 toc
