@@ -122,11 +122,11 @@ for i = 1:length(comb);
     end
 end
 
-b = test.SalaryNormalized(desc3.id);
+b3 = test.SalaryNormalized(desc3.id);
 
 bhat = A3*xhat;
 
-disp(['Norm of b - bhat = ' num2str(norm(b-bhat))])
+disp(['Norm of b - bhat = ' num2str(norm(b3-bhat))])
 
 
 %% LSE figure
@@ -151,5 +151,6 @@ set(gca,'FontSize',fs);
 %% Lasso Regularization
 
 %% Ramifications
-
+Pb = A*A';
+Ps = A'*A;
 

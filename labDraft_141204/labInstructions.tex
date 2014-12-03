@@ -48,8 +48,8 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     occurrences of individual words and associate them to salaries; here each
     word is a feature and as there are many descriptive words the resulting
     matrices will be sparse.  Other feature choices may be individual word
-    length, occurrences of word pairs or triplets (ie ``technical
-    communication``), n-grams (sequences of n characters), and many others. It
+    length, occurrences of word pairs or triplets (i.e. ``technical
+    communication"), n-grams (sequences of n characters), and many others. It
     is common to ignore stop words like ``the",``a",``it",``you",``we", etc.
     because they add little information.
 
@@ -212,8 +212,6 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     
     \begin{equation} 
         \bm{\hat{x}} = \texttt{pinv}(\bm{A})*\bm{b}
-        % I don't want to introduce the svd in the warmup, but the inverse does
-        %not work...  
     \end{equation}
 
     The least squares solution to this problem is
@@ -346,11 +344,10 @@ Recall that the basic form of the least squares problem is $\bm{b = Ax}$.
 We formed $\bm{A}$ by counting the number of occurrences of each word in the job description and placed the corresponding salaries in $\bm{b}$.
 $\bm{A}$ can be viewed as a mapping from word-weight space (home of $\bm{x}$) to salary space, with the reverse mapping coming from $\bm{A}$'s inverse.
 $\bm{x}$ was then the weight or descriptiveness of each word - how useful its number of occurrences were in predicting the correct salary.
-The descriptivity of descriptions can be compared by computing $\bm{A(i,:)*x}$ for the $\bm{i}$th descriptions.
 
-$\bm{A}$ is a linear operator, so if a particular applicant wants to make \$50,000, we can determine which words they should look for when reading descriptions by computing $\bm{pinv(A)*50000}$.
+$\bm{A}$ is a linear operator, so if a particular applicant wants to make \$50,000, we can determine which words they should look for when reading descriptions by computing $\bm{sum(}\texttt{pinv}\bm{(A)50000,2)}$.
 If the applicant includes these descriptive words in their objective statement or elsewhere in their resume, it is reasonable to expect that their application will be successful (though this is a different - if similar - problem).
-We can then use the $\bm{A}$ and $\bm{x}$ computed from the training data to analyze a resume and suggest what salary their resume implicitly seeks.
+We can also use the $\bm{A}$ and $\bm{x}$ computed from the training data to analyze a resume and suggest what salary their resume implicitly seeks.
 
 clustering graph...
 
