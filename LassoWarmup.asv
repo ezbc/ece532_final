@@ -49,7 +49,22 @@ ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
           'not','on','only','our','put','per','so','that','this','what','will','year','years','your'};
 keywords = setdiff(keywords, ignore);
 keywords = sort(keywords);
-
+% toc
+% 
+% tic
+% % Get frequencies of keywords, or A matrix, of the train Set
+% %{
+% freq_matrixTrain = zeros(N, length(keywords));
+% for i = 1:N
+%     for j = 1:length(keywords)
+%         freq = length(strfind(descTrain.FullDescription{i}, keywords{j})) * length(keywords{j});
+%         sentence_length = length(descTrain.FullDescription{i});
+%         freq_matrixTrain(i, j) = freq / sentence_length;
+%     end
+% end
+% toc
+% %}
+% 
 %this is functionally equivalent but twice the speed...
 tic
 nKeys = length(keywords);
@@ -78,14 +93,17 @@ lambda = 10; % gives 2 words
 % lambda = 5; % gives 5 words
 % lambda = 2; % gives 7 words
 % lambda = 1; % gives 10 words
-
-
+% lambda = 0.5; % gives 7 words
+% lambda = 2; % gives 7 words
 
 maxIter = 10000;
 eps = 10^-3;
-
+% xhat = Lasso( freq_matrixTrain, lambda,salaryTrain,maxIter,eps );
+% xhat = Lasso2( freq_matrixTrain, lambda,salaryTrain,maxIter,eps ); 
 A = freq_matrixTrain; b = salaryTrain;
 xhat = zeros(size(A,2),1);
+% size(lambda*(A'*A) )
+% alpha = 1./(lambda*(A'*A)); %Something seems wrong here.
 [u,s,v] = svd(A'*A);
 alpha = 1/s(1,1);
 delta = 10;

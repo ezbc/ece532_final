@@ -6,26 +6,26 @@ format compact;
 %% Generate Freq Matrix
 % {
 % Number of data points
-N = 2;
+N = 100;
 tic
 
-% load warmup data
-data = load('data/warmup_train.mat');
-train = data.warmup_train;
-data = load('data/warmup_test.mat');
-test = data.warmup_test;
+% load Activity data
+data = load('data/activity_train.mat');
+train = data.activity_train;
+data = load('data/activity_test.mat');
+test = data.activity_test;
 
-descTrain = train(1:2, 3);
-descTest = test(1:1,3);
+descTrain = train(1:N, 3);
+descTest = test(1:N,3);
 
-salaryTrain = table2array (train(:,11) );
-salaryTest = table2array (test(:,11) );
+salaryTrain = train.SalaryNormalized(1:N);
+salaryTest = test.SalaryNormalized(1:N);
 
 % Grab every word as a keyword
 all_words = true;
 if all_words
     words = {'RemoveTheInitialWordFromwords'};
-    for i = 1:2
+    for i = 1:N
         desc = descTrain.FullDescription{i};
         text = strsplit(descTrain.FullDescription{i}, ' ');
         for j = 1:length(text)
@@ -49,6 +49,21 @@ ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
           'not','on','only','our','put','per','so','that','this','what','will','year','years','your'};
 keywords = setdiff(keywords, ignore);
 keywords = sort(keywords);
+toc
+
+tic
+% Get frequencies of keywords, or A matrix, of the train Set
+%{
+freq_matrixTrain = zeros(N, length(keywords));
+for i = 1:N
+    for j = 1:length(keywords)
+        freq = length(strfind(descTrain.FullDescription{i}, keywords{j})) * length(keywords{j});
+        sentence_length = length(descTrain.FullDescription{i});
+        freq_matrixTrain(i, j) = freq / sentence_length;
+    end
+end
+toc
+%}
 
 %this is functionally equivalent but twice the speed...
 tic
@@ -64,28 +79,31 @@ toc
     
     
 % Get frequencies of keywords, or A matrix, of the test Set
-freq_matrixTest = zeros(1,nKeys);
+freq_matrixTest = zeros(N,nKeys);
 for ikeys = 1:nKeys;
     a = strfind(descTest.FullDescription,keywords{ikeys});
-    for idesc = 1:1;
+    for idesc = 1:N;
         freq_matrixTest(idesc, ikeys) = length(a{idesc}) * length(keywords{ikeys}) / length(descTest.FullDescription{idesc});
     end
 end
 
 %% Lasso It
 tic
-lambda = 10; % gives 2 words
-% lambda = 5; % gives 5 words
-% lambda = 2; % gives 7 words
-% lambda = 1; % gives 10 words
-
-
-
+% lambda = 10000; %gives two [and, the]
+% lambda = 1000; %gives 11
+% lambda = 500; %gives 17
+% lambda = 400; %18
+% lambda = 300; %22, 10000+
+lambda = 250; 
+% lambda = 200; %30+, 10000+ iterations
 maxIter = 10000;
 eps = 10^-3;
-
+% xhat = Lasso( freq_matrixTrain, lambda,salaryTrain,maxIter,eps );
+% xhat = Lasso2( freq_matrixTrain, lambda,salaryTrain,maxIter,eps ); 
 A = freq_matrixTrain; b = salaryTrain;
 xhat = zeros(size(A,2),1);
+% size(lambda*(A'*A) )
+% alpha = 1./(lambda*(A'*A)); %Something seems wrong here.
 [u,s,v] = svd(A'*A);
 alpha = 1/s(1,1);
 delta = 10;
@@ -108,11 +126,11 @@ for i = 1:30;
     fprintf('%d @ %3.4f = [%s]\n', i, xhat(ind(i)), keywords{ind(i)} );
 end
 
-% %Predict the salary based only on the words 
-predSalaryTest = freq_matrixTest * xhat
+%Predict the salary based only on the words 
+% predSalaryTest = freq_matrixTest * xhat;
 
-% get error of predicted salary
-error = norm(predSalaryTest - salaryTest)
+%get error of predicted salary
+% error = norm(predSalaryTest - salaryTest)
 
 
 toc

@@ -49,6 +49,7 @@ while( currentIter < maxIter && norm(Xcurrent - XPrev) > eps )
     %
     %     Xcurrent = (A'*A + lambda * pinv(W))^-1 * A' * b;
 end
+
 xhat = Xcurrent;
 end
 
