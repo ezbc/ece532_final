@@ -245,7 +245,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     % --------------------------------------------------------------------------
     \begin{center} 
         
-        \fbox{\begin{minipage}{40em} {\bf \large Activity 1} \\ Construct the
+        \fbox{\begin{minipage}{35em} {\bf \large Activity 1} \\ Construct the
                 above $\bm{A}$ and $\bm{b}$ matrices using the 1$^{\rm st}$ and
                 2$^{\rm nd}$ descriptions in the warm-up data,
                 warmup\_train.mat. $\bm{A}$ should be a 2$\times m$ matrix
@@ -295,7 +295,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     % --------------------------------------------------------------------------
     \begin{center} 
         
-        \fbox{\begin{minipage}{30em}
+        \fbox{\begin{minipage}{35em}
 
             {\bf \large Activity 2} \\
             Use your solution for $\bm{\hat{x}}$ in Activity 1 to estimate the
@@ -328,26 +328,237 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     include many more descriptions in our analysis, and derive more accurate
     predictors of a salary based on the description.
 
-\section{Feature Descriptors / Regularized LS - Elijah}
-About a page...
-Have them solve a 10 description problem w/ and w/o regularization?
+% ------------------------------------------------------------------------------
+\section{Larger Datasets and Regularized Least Squares}
+% ------------------------------------------------------------------------------
 
+    We have seen how a least squares fit to only two descriptions chooses the
+    most common word in the job description associated with the highest salary
+    to best predict a higher salary. Predicting the word ``be'' goes against
+    intuition. In the warm-up activity, our least squares fit was
+    underdetermined, meaning that there were more variables than equations.
+    With more descriptions we may be able to have more equations than
+    variables, the overdetermined case, which has a unique solution which will
+    likely be more intuitive.
+
+    % --------------------------------------------------------------------------
+    % Activity 
+    % --------------------------------------------------------------------------
+    \begin{center} 
+        
+        \fbox{\begin{minipage}{35em}
+
+            {\bf \large Activity 3} \\
+
+            Following the same method as in the warm-up, describe how the
+            frequency matrix will change with added descriptions. If we include
+            every word from each of the descriptions in our frequency matrix,
+            is it likely that the number of salaries will be greater than the
+            number of words in the frequency matrix? Describe how the
+            computation time scales with the size of the frequency matrix. Is
+            it practical to include every word from each description in the
+            frequency matrix?
+
+            \end{minipage}
+        }
+        
+    \end{center}
+    % --------------------------------------------------------------------------
+    % --------------------------------------------------------------------------
+
+    Lets consider a more realistic example where we are provided 10
+    descriptions from an individual industry sector each with a salary
+    provided. We will be working with the industry ``Customer Services Jobs''. 
+    
+    % --------------------------------------------------------------------------
+    % Activity 
+    % --------------------------------------------------------------------------
+    \begin{center} 
+        
+        \fbox{\begin{minipage}{35em}
+
+            {\bf \large Activity 4} \\
+            
+            Load the activity data, activity$\_$train.mat and
+            activity$\_$train.mat. With each data set construct a frequency
+            matrix of words, excluding common words you are confident will not
+            be important to a description's salary. Derive a linear least
+            squares solution for $\hat{\bm{x}}$ in Equation~\ref{eq:linsolve}
+            with the first 10 descriptions in the training set. Predict the
+            salaries of the first 10 descriptions in the test set. Report the
+            $L_2$ norm of the difference between the true salaries and
+            predicted salaries for the test set. Report the word which is best
+            able to predict the salary of a description. State whether this
+            problem is over determined or under determined.
+
+            \end{minipage}
+        }
+        
+    \end{center}
+    % --------------------------------------------------------------------------
+    % --------------------------------------------------------------------------
+
+    We can see again that the least squares problem is again not unique. One
+    way to derive a unique solution in an under determined linear equation is
+    to use regularized least squares. This is similar to least squares, but
+    with an additional smoothing term in the minimization
+
+    \begin{equation}
+        \min_x \|\bm{b} - \bm{Ax}\|_2^2 + \lambda\|\bm{x}\|_2^2
+    \end{equation}
+
+    \noindent where $\lambda > 0$. $\lambda$ is the smoothing parameter. Larger
+    $\lambda$ values favor smaller $L_2$ norms, while small $\lambda$ values
+    return the minimization to linear least squares.  Essentially
+    regularization allows for a unique solution that can be smoothly varying,
+    and not sensitive to small changes in the frequency matrix. The solution to
+    regularized least squares is given by
+
+    \begin{equation}
+        \bm{\hat{x}} = (\bm{A}^{T}\bm{A} + \lambda \bm{I})^{-1}\bm{A}^T\bm{b}
+    \end{equation}
+
+    \noindent where $\bm{I}$ is the identity matrix. We will explore a similar
+    regularization in the next section which will help us minimize the number
+    of words that we include our solution.
+
+% ------------------------------------------------------------------------------
 \section{The Lasso Method - Ahmed}
-Describe Lasso briefly, that it's a regularized method which 'works better' for this sparse problem..
-Solve same 10 problem with Lasso
-Provide A, A inv, and xhat for a larger problem?
+% ------------------------------------------------------------------------------
+
+    One of the issues with predicting a job salary is choosing what key words
+    we should use to predict them. As we have seen, the number of words ever
+    for small datasets used to construct frequency matrices and weighting
+    solutions quickly grows out of hand. Fortunately, there are ways of
+    automatically choosing what words we should choose in predicting the salary
+    for the ads. One such method is the Lasso method, another form of
+    regularization similar to regularized least squares. The Lasso method
+    attempts to solve the following equation
+
+    \begin{equation}
+        \min_x \|\bm{b} - \bm{Ax}\|_2^2 + \lambda\|\bm{x}\|_1
+    \end{equation}
+
+    \noindent which is minimizing the least square solution along with the
+    absolute values word weights. By making $\lambda$ large you are making
+    $\bm{x}$, the number of words you predict salaries with, small. Smaller
+    $\lambda$ values correspond to using all words, or back to the linear least
+    squares minimization. This form of regularization removes words with low
+    frequencies thus removing the sparsity in the matrix, i.e., removing mostly
+    zero word occurrences in lots of examples. 
+
+    The implementation of the Lasso method is not so trivial however. There is
+    no closed-form solution to solving the Lasso method. however there are good
+    approximations that derive solutions quickly. The following describes the
+    pseudo-code for implementing the Lasso method:
+
+    \begin{minipage}{35em}
+
+        \begin{enumerate}
+            
+            \item Initialize two weight vectors for the frequency matrices,
+                $\hat{\bm{x}}$ and $\hat{\bm{x}}^\prime$, consisting of zeros,
+                with lengths equal to the number of unique words in all
+                descriptions.
+
+            \item Take singular value decomposition of frequency matrix
+                $\bm{A}$ by \texttt{[T, S, V] = svd(A)}
+
+            \item Initialize $\alpha$ to largest singular value of
+                decomposition of $\bm{A}$ 1/max($\bm{S}$)
+
+            \item Set $\Delta$, the 2-norm of the difference between
+                $\hat{\bm{x}}$ and $\hat{\bm{x}}^\prime$ to a large value.
+                
+            \item While $\Delta$ is larger than the tolerance and the iteration
+                number is less than the maximum iteration do
+
+                \begin{enumerate}
+
+                    \item Set $\hat{\bm{x}}$ = $\hat{\bm{x}}^\prime$
+                    
+                    \item Set $\bm{Y}$ = $\hat{\bm{x}}$ + $\alpha$ $\bm{A}^T
+                        (\bm{b - A} \hat{\bm{x}}$)
+
+                    \item Set $\hat{\bm{x}}^\prime$ = sign($\bm{Y}$)
+                        $\max(|\bm{Y}| - \alpha \lambda$, 0)
+
+                    \item Increase the iteration number
+
+                    \item Set $\Delta$ = $\|\hat{\bm{x}}$ -
+                        $\hat{\bm{x}}^\prime\|$
+
+                \end{enumerate}
+
+            \item Return $\hat{\bm{x}}$ as the predictor.
+
+        \end{enumerate}
+    \end{minipage}
+
+    % --------------------------------------------------------------------------
+    % Activity 
+    % --------------------------------------------------------------------------
+    \begin{center} 
+        
+        \fbox{\begin{minipage}{35em}
+
+            {\bf \large Activity 5a} \\
+    
+            Construct a function for the Lasso method. Perform the Lasso method
+            on all 100 descriptions using the datasets
+            \texttt{activity$\_$test.mat} and \texttt{activity$\_$train.mat}.
+            Set $\lambda$ = 10. The resulting $\hat{\bm{x}}$ value should be
+            all zeros except for 2 values, corresponding to the predicting
+            words ``experience'' and ``client''. Predict the salaries of the
+            test data using the training data. Report the 2-norm of the
+            difference between the predicted and the true salaries. Make a
+            histogram of the residuals between the predicted and the true
+            salaries.\\
+            
+            {\bf \large Activity 5b} \\
+
+            Perform the Lasso method with different values of $\lambda$ = 10,
+            5, 2, 1. Record the number of important words, (words with non-zero
+            weights), the important words, and the 2-norm of the difference
+            between the true and predicted salaries. Summarize the results in a
+            table. Make a histogram of the residuals between the predicted and
+            the true salaries for each of the $\lambda$ values as well.\\
+            
+            {\bf \large Activity 5c} \\
+
+            Experiment with the Lasso method using smaller values of
+            $\lambda$.  What $\lambda$ value do you think keeps the number of
+            words reasonable while still including enough words in the weight
+            matrix to accurately predict the salary? This can be an art, there
+            is not a correct answer. 
+
+            \end{minipage}
+        }
+        
+    \end{center}
+    % --------------------------------------------------------------------------
+    % --------------------------------------------------------------------------
+
 
 \section{Using the Results...Ben}
 We've seen that accurate salary prediction is a function of the algorithm and the size of the training set, and while there are many additional improvements, let's conclude by exploring some results of this analysis.
 
-Recall that the basic form of the least squares problem is $\bm{b = Ax}$.
-We formed $\bm{A}$ by counting the number of occurrences of each word in the job description and placed the corresponding salaries in $\bm{b}$.
-$\bm{A}$ can be viewed as a mapping from word-weight space (home of $\bm{x}$) to salary space, with the reverse mapping coming from $\bm{A}$'s inverse.
-$\bm{x}$ was then the weight or descriptiveness of each word - how useful its number of occurrences were in predicting the correct salary.
+Recall that the basic form of the least squares problem is $\bm{b = Ax}$.  We
+formed $\bm{A}$ by counting the number of occurrences of each word in the job
+description and placed the corresponding salaries in $\bm{b}$.  $\bm{A}$ can be
+viewed as a mapping from word-weight space (home of $\bm{x}$) to salary space,
+with the reverse mapping coming from $\bm{A}$'s inverse.  $\bm{x}$ was then the
+weight or descriptiveness of each word - how useful its number of occurrences
+were in predicting the correct salary.
 
-$\bm{A}$ is a linear operator, so if a particular applicant wants to make \$50,000, we can determine which words they should look for when reading descriptions by computing $\bm{sum(}\texttt{pinv}\bm{(A)50000,2)}$.
-If the applicant includes these descriptive words in their objective statement or elsewhere in their resume, it is reasonable to expect that their application will be successful (though this is a different - if similar - problem).
-We can also use the $\bm{A}$ and $\bm{x}$ computed from the training data to analyze a resume and suggest what salary their resume implicitly seeks.
+$\bm{A}$ is a linear operator, so if a particular applicant wants to make
+\$50,000, we can determine which words they should look for when reading
+descriptions by computing $\bm{sum(}\texttt{pinv}\bm{(A)50000,2)}$.  If the
+applicant includes these descriptive words in their objective statement or
+elsewhere in their resume, it is reasonable to expect that their application
+will be successful (though this is a different - if similar - problem).  We can
+also use the $\bm{A}$ and $\bm{x}$ computed from the training data to analyze a
+resume and suggest what salary their resume implicitly seeks.
 
 clustering graph...
 
