@@ -157,6 +157,8 @@ descTest = test.FullDescription(1:N);
 salaryTrain = train.SalaryNormalized(1:N);
 salaryTest = test.SalaryNormalized(1:N);
 
+
+
 tic
 all_words = true;
 if all_words
@@ -211,25 +213,13 @@ for ikeys = 1:nKeys;
     end
 end
 
-
-
-% Get frequencies of keywords, or A matrix, of the test Set
-
-freq_matrixTest = zeros(N,nKeys);
-for ikeys = 1:nKeys;
-    a = strfind(descTest,keywords{ikeys});
-    for idesc = 1:N;
-        freq_matrixTest(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTest{idesc});
-    end
-end
-
 toc
 
 %% Activity 5a) - Lasso Implementation
 
 
 lambda = .1; 
-maxIter = 1e4;
+maxIter = 1e3;
 eps = 10^-3;
 A = freq_matrixTrain; b = salaryTrain;
 xhat = zeros(size(A,2),1);
@@ -258,7 +248,7 @@ end
 
 % lambda = .001; maxIter = 1e4; %max its, delta 68, error 1e5
 % lambda = .00001; maxIter = 1e5; %max its, delat .7 error 1e5, 4.4min
-lambda = .1; maxIter = 1e4;
+lambda = .1; maxIter = 1e3;
 %N=300:
 % lambda = .01; maxIter = 1e4; % max its, delta 1513, error 2e5, 5.2 min
 % lambda = .001; maxIter = 1e5; %max its, delat 20, error 2e5, 32 min
@@ -288,14 +278,6 @@ for i = 1:30;
     fprintf('%d (%d) @ %3.4f = [%s]\n', i, ind(i), xhat(ind(i)), keywords{ind(i)} );
 end
 
-% Predict the salary based only on the words 
-predSalaryTest = freq_matrixTest * xhat;
-
-%get error of predicted salary
-error = norm(predSalaryTest - salaryTest)
-[~,xinds] = sort(abs(xhat),'descend');
-plot(1:length(xhat),xinds,'.')
-
 
 %% Activity 5c) - 
 
@@ -306,6 +288,15 @@ plot(1:length(xhat),xinds,'.')
 % train = data.activity_train;
 % data = load('../data/activity_test.mat');
 % test = data.activity_test;
+
+% Predict the salary based only on the words 
+predSalaryTest = freq_matrixTest * xhat;
+
+%get error of predicted salary
+error = norm(predSalaryTest - salaryTest)
+[~,xinds] = sort(abs(xhat),'descend');
+plot(1:length(xhat),xinds,'.')
+toc
 %----Ahmed---- end section 5 stuff
 
 
