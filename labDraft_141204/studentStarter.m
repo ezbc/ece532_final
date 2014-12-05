@@ -203,6 +203,9 @@ for ikeys = 1:nKeys;
     end
 end
 %% Activity 5a) - Lasso Implementation
+lambda = .1; 
+maxIter = 1e3;
+eps = 10^-3;
 
 % Initilize the two weight vectors xhat and xhat' to all zeros
 
@@ -213,7 +216,7 @@ end
 % Set delta, usually the norm of xhat and xhat', to a large initial value
 
 % Complete while loop
-while(delta == inf ) %% add conditions of loop
+while( ) %% add conditions of loop
    
     %increase iteration number
     

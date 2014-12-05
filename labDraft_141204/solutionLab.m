@@ -230,7 +230,7 @@ toc
 
 
 lambda = .1; 
-maxIter = 1e4;
+maxIter = 1e3;
 eps = 10^-3;
 A = freq_matrixTrain; b = salaryTrain;
 xhat = zeros(size(A,2),1);
