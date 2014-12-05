@@ -1,0 +1,126 @@
+
+Mark Hoang
+9999 Mill St. Apt. 8C • San Luis Obispo, CA 93401 • (805) 762-4978
+• mhoang777@calpoly.edu
+OBJECTIVE
+To
+obtain a co-op position in the electrical engineering field, specifically in
+communications
+or electronics
+EDUC
+ATION
+California Polytechnic State University
+, San
+Luis Obispo
+Bachelor of Science in
+Electrical Engineering
+, December 2003
+GPA: 3.89
+President’s List –
+2002
+Dean’s
+List –
+4 quarters
+Relevant Coursework:
+Electronic Devices, Linear Control Systems, Random
+Signals and Noise, Digital Integrated Electronics,
+Electronic Circuits, Integrated El
+ectronic Circuits, Signal Transmi
+ssion, Discrete Time Systems,
+Electromagnetic Fields I & II, Digital System Design, High-Frequency
+Amplifier Design, Digital
+Communication Systems, Digital Signal Processing,
+Polymer Electronics, and
+Electronic Manufacturing
+SKILLS
+Software:
+Electronic Workbench, PSPICE (OrCAD), Xilinx, Micro-Cap, Matlab, DADISP, ADS, C
+Hardware:
+HP
+8410B Network Analyzer, Anritsu MS 4622B, Spectrum Analyzer
+TECHNICAL
+PROJECTS
+Senior Project
+1/03
+–
+6/03
+•
+Built a transmitter and
+receiver for an audio signal
+•
+Utilized direct sequence spread spectrum
+system and modulated data signal using
+BPSK (Binary Phase
+Shift Keying)
+•
+Demodulated signal using 2 parallel integrator
+s to
+get more reliable data at the receiver
+Narrowband Amplifier Project
+1/03
+–
+3/03
+•
+With the aid
+of Agilent’s ADS software, designed narrowband amplifier by meeting
+specified requirements: frequency range of
+1200-1500MHz, source and load impedance
+of 50
+Ohms, input and output
+VSWR less than
+2.0 and less than 1dB
+ripple
+Digilock Project
+9/02
+– 12/02
+•
+Designed an
+FSM using VHDL
+and StateCAD software
+•
+Physically implemented functions by
+programming and testing a PAL using VHDL,
+NOVA,
+StateCAD, and hardware tests
+Waveform Generator
+Project
+9/02
+– 12/02
+•
+Designed a 4-function generator by programming PLD (
+CE22V10H), which is
+Connected to DAV0
+830LCN (8-Bit DAC)
+Seat Belt Interlock Project
+9/02
+– 12/02
+•
+Designed a synchronous FSM and downloaded the design into FPGA
+on
+Digilab DIOI
+Board and tested the design
+using switches and LEDs
+EXPERIENCE
+Electrical Engineering
+Laboratory Assistant
+1/02
+– 5/03
+California Polytechnic State University – San Luis Obispo
+•
+Helped students conduct electrical engineering experiments and graded homework
+papers
+Mathematics Computer Laboratory
+Assistant
+1/00 – 8/01
+Santa Rosa Junior College, Santa Rosa, CA
+•
+Installed and updated operating system and software programs
+•
+Helped students learn software programs such as: Maple,
+Differential System, Data Desk,
+M
+icrosoft Office, Omni Page, Vista Scan, Adobe Photoshop, and Adobe Illustrator
+INVOLVE
+MENT
+IEEE
+MESA (Math Engineering Science Achievement) Program

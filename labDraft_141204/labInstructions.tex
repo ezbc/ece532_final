@@ -96,11 +96,18 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     our case, we want to predict salaries from the words contained in the job
     descriptions.  For now, let's consider only occurrences of ``analyse" in
     the description.  If you plot the number of occurrences against the job
-    salary, you might produce something like
+    salary, you might produce something like in Figure~\ref{fig:lse}.
     
-    \begin{center}
-    \includegraphics[width=\linewidth]{figLSE}
-    \end{center}
+    \begin{figure}
+        \begin{center}
+        
+            \includegraphics[width=\linewidth]{figLSE}
+
+            \caption{\label{fig:lse} Number of occurances of a word versus job
+            salary in blue dots, with a linear least squares fit.}
+
+        \end{center}
+    \end{figure}
     
     In solving the least squared problem, we're looking for the line which
     passes nearest to all of the points, as measured by the Euclidean distance,
@@ -245,21 +252,17 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     % --------------------------------------------------------------------------
     \begin{center} 
         
-        \fbox{\begin{minipage}{35em} {\bf \large Activity 1} \\ Construct the
-                above $\bm{A}$ and $\bm{b}$ matrices using the 1$^{\rm st}$ and
-<<<<<<< HEAD
-                2$^{\rm nd}$ descriptions in the warm-up train data,
-                activity1.mat. $\bm{A}$ should be a 2$\times m$ matrix where
-                $m$ is the number of unique words between the two
-=======
-                2$^{\rm nd}$ descriptions in \texttt{activity1.mat}.
-                $\bm{A}$ should be a 2$\times m$ matrix
-                where $m$ is the number of unique words between the two
->>>>>>> 2d0684dddae8cba814aa8296efadd4cb7b53a31d
-                descriptions.  $\bm{b}$ should be a 2$\times$1 matrix. Can you
-                reproduce the above solution for $\bm{\hat{x}}$? Report on the
-                uniqueness of the solution for $\bm{\hat{x}}$ in this problem.
-                Support your conclusion.\\
+        \fbox{\begin{minipage}{35em} {\bf \large Activity 1} \\ 
+                
+        Construct the above $\bm{A}$ and $\bm{b}$ matrices using the 1$^{\rm
+        st}$ and 2$^{\rm nd}$ descriptions in \texttt{activity1.mat}. A starter
+        code has been provided for you, \texttt{studentStarter.m}, which you
+        may use to help you start this activity and the following activities.
+        $\bm{A}$ should be a 2$\times m$ matrix where $m$ is the number of
+        unique words between the two descriptions.  $\bm{b}$ should be a
+        2$\times$1 matrix.  Can you reproduce the above solution for
+        $\bm{\hat{x}}$? Report on the uniqueness of the solution for
+        $\bm{\hat{x}}$ in this problem.  Support your conclusion.\\
             
             The following commands may be helpful:
             \begin{center}
@@ -307,7 +310,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
             Activity 1 to estimate the salary of the third description in the
             warm-up test data, from activity1.mat.  Since $\bm{\hat{x}}$ is a
             weighting of words from the first two descriptions, ignore any
-            words that are unique to the third description.  \end{minipage} }
+            words that are unique to the third description.  \end{minipage} 
         }
         
     \end{center}
@@ -383,17 +386,18 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
 
             {\bf \large Activity 4} \\
             
-            Load the activity data, activity$\_$train.mat and
-            activity$\_$train.mat. With each data set construct a frequency
-            matrix of words, excluding common words you are confident will not
-            be important to a description's salary. Derive a linear least
-            squares solution for $\hat{\bm{x}}$ in Equation~\ref{eq:linsolve}
-            with the first 10 descriptions in the training set. Predict the
-            salaries of the first 10 descriptions in the test set. Report the
-            $L_2$ norm of the difference between the true salaries and
-            predicted salaries for the test set. Report the word which is best
-            able to predict the salary of a description. State whether this
-            problem is over determined or under determined.
+            Load the activity data, \texttt{activity4.mat}, which loads the
+            variables test and train, the testing and training datasets
+            respectively. With each data set construct a frequency matrix of
+            words, excluding common words you are confident will not be
+            important to a description's salary. Derive a linear least squares
+            solution for $\hat{\bm{x}}$ in Equation~\ref{eq:linsolve} with the
+            first 10 descriptions in the training set. Predict the salaries of
+            the first 10 descriptions in the test set. Report the $L_2$ norm of
+            the difference between the true salaries and predicted salaries for
+            the test set. Report the word which is best able to predict the
+            salary of a description. State whether this problem is over
+            determined or under determined.
 
             \end{minipage}
         }
@@ -452,11 +456,9 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     zero word occurrences in lots of examples. 
 
     The implementation of the Lasso method is not so trivial however. There is
-    no closed-form solution to solving the Lasso method. however there are good
+    no closed-form solution to solving the Lasso method. However there are good
     approximations that derive solutions quickly. The following describes the
     pseudo-code for implementing the Lasso method:
-
-    \begin{minipage}{35em}
 
         \begin{enumerate}
             
@@ -497,7 +499,32 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
             \item Return $\hat{\bm{x}}$ as the predictor.
 
         \end{enumerate}
-    \end{minipage}
+
+    One example which is helpful in illustrating the Lasso method is plotting
+    the word index in the frequency matrix, versus the rank of the word in the
+    $\bm{\hat{x}}$ vector, the weight vector. Higher rank corresponding to a
+    larger weight. In Figure~\ref{fig:lasso} we can see how the additional
+    constraint of minimizing the 1-norm allows for only a limited number of
+    words to have any weights.
+    
+    \begin{figure}
+        \begin{center}
+        
+            \includegraphics[width=\linewidth]{lasso_xhat.png}
+
+            \caption{\label{fig:lasso} Individual words along the y-axis are
+                plotted against their rank in the $\bm{\hat{x}}$ matrix on the
+                x-axis. The scattered words at low rank are the excluded words
+                The Lasso method will exclude words from the predictor matrix,
+            a lower value of $\lambda$ will cause allow for more words, thus
+        making the slop of the included words in the predictor matrix more
+    shallow.}
+
+        \end{center}
+    \end{figure}
+
+    We should now try to apply our new knowledge of the Lasso method to derive
+    accurate predictors of salary given a description.
 
     % --------------------------------------------------------------------------
     % Activity 
@@ -505,38 +532,36 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \begin{center} 
         
         \fbox{\begin{minipage}{35em}
-Add some visualization like \texttt{[\~,xinds] = sort(abs(xhat),'descend');}
-\texttt{plot(1:length(xhat),xinds,'.')}
 
             {\bf \large Activity 5a} \\
     
             Construct a function for the Lasso method. Perform the Lasso method
-            on all 100 descriptions using the datasets
-            \texttt{activity$\_$test.mat} and \texttt{activity$\_$train.mat}.
-            Set $\lambda$ = 10. The resulting $\hat{\bm{x}}$ value should be
-            all zeros except for 2 values, corresponding to the predicting
-            words ``experience'' and ``client''. Predict the salaries of the
-            test data using the training data. Report the 2-norm of the
-            difference between the predicted and the true salaries. Make a
+            on all 100 descriptions of the train set using the dataset from
+            Activity 4.  Set $\lambda$ = 100. The resulting $\hat{\bm{x}}$
+            value should be all zeros except for 12 values, with the top two
+            predicting words being ``pro'' and ``end''. Predict the salaries of
+            the 100 test data using the 100 training data. Report the 2-norm of
+            the difference between the predicted and the true salaries. Make a
             histogram of the residuals between the predicted and the true
             salaries.\\
             
             {\bf \large Activity 5b} \\
 
-            Perform the Lasso method with different values of $\lambda$ = 10,
-            5, 2, 1. Record the number of important words, (words with non-zero
-            weights), the important words, and the 2-norm of the difference
-            between the true and predicted salaries. Summarize the results in a
-            table. Make a histogram of the residuals between the predicted and
-            the true salaries for each of the $\lambda$ values as well.\\
+            Perform the Lasso method with different values of $\lambda$ = 100,
+            10, and 1. Record the number of important words, (words with
+            non-zero weights), the important words, and the 2-norm of the
+            difference between the true and predicted salaries. Summarize the
+            results in a table. Make a histogram of the residuals between the
+            predicted and the true salaries for each of the $\lambda$ values as
+            well.\\
             
             {\bf \large Activity 5c} \\
 
-            Experiment with the Lasso method using smaller values of
-            $\lambda$.  What $\lambda$ value do you think keeps the number of
-            words reasonable while still including enough words in the weight
-            matrix to accurately predict the salary? This can be an art, there
-            is not a correct answer. 
+            Experiment with the Lasso method using smaller values of $\lambda$.
+            What $\lambda$ value do you think keeps the number of words
+            reasonable while still including enough words in the weight matrix
+            to accurately predict the salary? This can be an art, there is not
+            a correct answer. 
 
             \end{minipage}
         }
@@ -546,52 +571,85 @@ Add some visualization like \texttt{[\~,xinds] = sort(abs(xhat),'descend');}
     % --------------------------------------------------------------------------
 
 
+% ------------------------------------------------------------------------------
 \section{Using the Results}
-We've seen that accurate salary prediction is a function of the algorithm and the size of the training set, and while there are many additional improvements, let's conclude by exploring some results of this analysis.
+% ------------------------------------------------------------------------------
 
-Recall that the basic form of the least squares problem is $\bm{b = Ax}$.  We
-formed $\bm{A}$ by counting the number of occurrences of each word in the job
-description and placed the corresponding salaries in $\bm{b}$.  $\bm{A}$ can be
-viewed as a mapping from word-weight space (home of $\bm{x}$) to salary space,
-with the reverse mapping coming from $\bm{A}$'s inverse.  $\bm{x}$ was then the
-weight or descriptiveness of each word - how useful its number of occurrences
-were in predicting the correct salary.
+    We've seen that accurate salary prediction is a function of the algorithm
+    and the size of the training set, and while there are many additional
+    improvements, let's conclude by exploring some results of this analysis.
 
-$\bm{A}$ is a linear operator, so if a particular applicant wants to make
-\$50,000, we can determine which words they should look for when reading
-descriptions by computing $\bm{sum(}\texttt{pinv}\bm{(A)50000,2)}$.
-If the
-applicant includes these descriptive words in their objective statement or
-elsewhere in their resume, it seems reasonable to expect that their application
-will be successful (though this is a different - if similar - problem).  We can
-also use the $\bm{A}$ and $\bm{x}$ computed from the training data to analyze a
-resume and suggest what salary their resume implicitly seeks.
+    Recall that the basic form of the least squares problem is $\bm{b = Ax}$.
+    We formed $\bm{A}$ by counting the number of occurrences of each word in
+    the job description and placed the corresponding salaries in $\bm{b}$.
+    $\bm{A}$ can be viewed as a mapping from word-weight space (home of
+    $\bm{x}$) to salary space, with the reverse mapping coming from $\bm{A}$'s
+    inverse.  $\bm{x}$ was then the weight or descriptiveness of each word -
+    how useful its number of occurrences were in predicting the correct salary.
+
+    $\bm{A}$ is a linear operator, so if a particular applicant wants to make
+    \$50,000, we can determine which words they should look for when reading
+    descriptions by computing \texttt{sum$(\texttt{pinv}\bm{(A)}$ 50000,2)}.
+    If the applicant includes these descriptive words in their objective
+    statement or elsewhere in their resume, it seems reasonable to expect that
+    their application will be successful (though this is a different - if
+    similar - problem).  We can also use the $\bm{A}$ and $\bm{x}$ computed
+    from the training data to analyze a resume and suggest what salary their
+    resume implicitly seeks.
 
     % --------------------------------------------------------------------------
     % Activity 
     % --------------------------------------------------------------------------
     \begin{center} 
         
-    \fbox{
-	\begin{minipage}{35em}
-	{\bf \large Activity 6a} \\
-The loaded data also contains the {Modern Major General's song} and a sample undergraduate electrical engineering resume as \texttt{majorGen} and \texttt{elecGrad}.
-Predict how much the Major General and EE grad would make if applying to jobs similar to those in the training set.\\
+    \fbox{\begin{minipage}{35em}
 
-	{\bf \large Activity 6b} \\
-The salaries fall substantially below the poverty line in any country; why is this the case?
-Compare the most important keywords against those contained in \texttt{majorGen} and \texttt{elecGrad}; it may help to consider how the predicted salary is computed.
-	\end{minipage}
-     }
-\end{center}
+	    {\bf \large Activity 6a} \\
+	    
+        Load the text \texttt{majorGen.txt} contains the {Modern Major
+        General's song} and \texttt{elecGrad.txt} which contains a sample
+        undergraduate electrical engineering resume as \texttt{majorGen} and
+        \texttt{elecGrad}. Predict how much the Major General and EE grad would
+        make if applying to jobs similar to those in the training set.\\
+
+	    {\bf \large Activity 6b} \\
+
+        The salaries fall substantially below the poverty line in any country;
+        why is this the case?  Compare the most important keywords against
+        those contained in \texttt{majorGen} and \texttt{elecGrad}; it may help
+        to consider how the predicted salary is computed.
+	
+	\end{minipage}}
+
+    \end{center}
     % --------------------------------------------------------------------------
     % --------------------------------------------------------------------------
 
-It is beyond the scope of this lab to consider other machine learning strategies that may be more successful and/or faster in solving this problem, but having reached this point it's worth commenting that this method is easy to understand.
-That is, it's easy to inspect and debug and can give good results without heavily relying on statistical concepts.
-Achieving good results requires some tuning; even though the test salary prediction error was below [final error], it had difficult predicting the Major General and EE grad salaries.
-This difference is due to the differing writing styles between the job descriptions, Major General's song, and EE grad resume.
+    It is beyond the scope of this lab to consider other machine learning
+    strategies that may be more successful and/or faster in solving this
+    problem, but having reached this point it's worth commenting that this
+    method is easy to understand.  That is, it's easy to inspect and debug and
+    can give good results without heavily relying on statistical concepts.
+    Achieving good results requires some tuning; even though the test salary
+    prediction error was below 1\,$\times$\,10$^5$, it had difficulty predicting
+    the Major General and EE grad salaries.  This difference is due to the
+    differing writing styles between the job descriptions, Major General's
+    song, and EE grad resume.
+    
+% ------------------------------------------------------------------------------
+\section{Conclusion}
+% ------------------------------------------------------------------------------
 
+    We have explored multiple ways to predict a salary of a job position given
+    a job description. We derived predictions using linear least squares and
+    the Lasso method. Based on the results of the activities, would Adzuna
+    likely use your solutions? What could improve your results? The data from
+    activity 4 have 1,000 descriptions, are you up to the challenge to derive
+    predictions of this large dataset? Adzuna's original dataset had over
+    600,000 job descriptions. How would our methods work with this large
+    dataset? Solving problems like this are quite topical in our age of big
+    data, and you've now had a taste of some of the important methods used to
+    tackle real-world problems.
 
 \end{document}
 

@@ -2,13 +2,7 @@
 clc; clear all; close all; format compact;
 
 %% Load Data
-
-data = load('../data/warmup_train.mat');
-train = data.warmup_train;
-data = load('../data/warmup_test.mat');
-test = data.warmup_test;
-clear data;
-
+load('activity_data/activity1.mat');
 
 %% Activity 1) - pinv() Solution
 %{
@@ -143,7 +137,7 @@ set(gca,'FontSize',fs);
 % Number of data points
 N = 100;
 
-data = load('../activity_data/activity4.mat');
+data = load('activity_data/activity4.mat');
 train = data.train;
 test = data.test;
 
@@ -220,7 +214,7 @@ toc
 
 %% Activity 5a) - Lasso Implementation
 
-lambda = .1; 
+lambda = 100; 
 maxIter = 1e3;
 eps = 10^-5;
 A = freq_matrixTrain; b = salaryTrain;
@@ -246,6 +240,7 @@ end;
 for i = 1:30;
     fprintf('%d (%d) @ %3.4f = [%s]\n', i, ind(i), xhat(ind(i)), keywords{ind(i)} );
 end
+
 %% Activity 5b) - using lasso with different lambda values
 
 % lambda = .001; maxIter = 1e4; %max its, delta 68, error 1e5
@@ -288,28 +283,25 @@ error = norm(predSalaryTest - salaryTest)
 [~,xinds] = sort(abs(xhat),'descend');
 plot(1:length(xhat),xinds,'.')
 
-
 %% Activity 5c) - 
 
 %% Activity 6a) - 
 
 
 % Predict salaries of a Moder Major General and an EE Grad
-fid = fopen('majorGeneral.txt');
+fid = fopen('activity_data/majorGen.txt');
 major = ' ';
 for i = 1:37
-    major = strcat(major, fgetl(fid));
+    major = strcat(major, fgetl(majorGen));
 end
 fclose(fid);
 
-fid = fopen('ee_resume.txt');
+fid = fopen('activity_data/elecGrad.txt');
 eegrad = ' ';
 for i = 1:37
-    eegrad = strcat(eegrad, fgetl(fid));
+    eegrad = strcat(eegrad, fgetl(elecGrad));
 end
 fclose(fid);
-
-
 
 Amjr = zeros(1,nKeys);
 for i = 1:nKeys;
