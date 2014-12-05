@@ -150,6 +150,100 @@ set(gca,'FontSize',fs);
 
 %% Lasso Regularization
 
+%loading data needed for this activity
+data = load('../activity_data/activity4.mat');
+train = data.train;
+test = data.test;
+
+% Grab every word in the description
+descTrain = train.FullDescription(1:N);
+descTest = test.FullDescription(1:N);
+
+%get the salary
+salaryTrain = train.SalaryNormalized(1:N);
+salaryTest = test.SalaryNormalized(1:N);
+
+%% Calculating the frequency matrix (A) of the data
+all_words = true;
+if all_words
+    words = {'RemoveTheInitialWordFromwords'};
+    for i = 1:N
+        text = strsplit(descTrain{i}, ' ');
+        for j = 1:length(text)
+            %Remove all non English letters characters and numbers
+            text{j} = regexprep(text{j},'[^a-zA-Z0-9]','');
+            % turn to all letters to lower case
+            text{j} = lower(text{j});
+            %Add text to words
+            if length(text{j}) > 2
+                words = [words, text{j}]; %#ok<AGROW>
+            end
+        end
+    end
+    words = words(2:end); %remove the initial
+    keywords = unique(words);
+end
+%remove the ignore words that probably dont contribute anything to the data
+%set.
+ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
+          'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
+          'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'...
+          '', 'able','all','as','but','by','cv','every','from','get','had','if','its',...
+          'not','on','only','our','put','per','so','that','this','what','will','year','years','your'};
+keywords = setdiff(keywords, ignore);
+keywords = sort(keywords);
+
+%calculate the frequency matrix
+nKeys = length(keywords);
+freq_matrixTrain = zeros(N,nKeys);
+for ikeys = 1:nKeys;
+    a = strfind(descTrain,keywords{ikeys});
+    for idesc = 1:N;
+        freq_matrixTrain(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTrain{idesc});
+    end
+end
+%% Activity 5a) - Lasso Implementation
+
+% Initilize the two weight vectors xhat and xhat' to all zeros
+
+% Take the SVD of the frequency matrix A
+
+% Initilize alpha to 1/(largest eigen value of A)
+
+% Set delta, usually the norm of xhat and xhat', to a large initial value
+
+% Complete while loop
+while(delta == inf ) %% add conditions of loop
+   
+    %increase iteration number
+    
+    % set xhat to xhat';
+    
+    % compute y
+    
+    %compute xhat'
+   
+    % compute delta as the 2-norm of xhat and xhat'
+    delta = norm(xnext - xhat);
+    
+end
+
+%% Activity 5b) - using lasso with different lambda values and finding 
+%                 words and erros
+
+
+% lambda = .001; 
+% lambda = .00001; maxIter = 1e5;
+lambda = .1; maxIter = 1e4;
+%N=300:
+% lambda = .01; maxIter = 1e4;
+% lambda = .001; maxIter = 1e5;
+%N=500:
+% lambda = .1; maxIter = 1e3;
+
+%% Activity 5c) - Experimentation of choice of lamda
+
+
 %% Ramifications
 Pb = A*A';
 Ps = A'*A;

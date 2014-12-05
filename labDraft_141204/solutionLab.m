@@ -150,10 +150,11 @@ data = load('../activity_data/activity4.mat');
 train = data.train;
 test = data.test;
 
-% Grab every word as a keyword so we can cut down later
+% Grab every word in the description
 descTrain = train.FullDescription(1:N);
 descTest = test.FullDescription(1:N);
 
+%get the salary
 salaryTrain = train.SalaryNormalized(1:N);
 salaryTest = test.SalaryNormalized(1:N);
 
@@ -254,7 +255,7 @@ end;
 for i = 1:30;
     fprintf('%d (%d) @ %3.4f = [%s]\n', i, ind(i), xhat(ind(i)), keywords{ind(i)} );
 end
-%% Activity 5b) - using lasso with diferent lammbda values
+%% Activity 5b) - using lasso with different lambda values
 
 % lambda = .001; maxIter = 1e4; %max its, delta 68, error 1e5
 % lambda = .00001; maxIter = 1e5; %max its, delat .7 error 1e5, 4.4min

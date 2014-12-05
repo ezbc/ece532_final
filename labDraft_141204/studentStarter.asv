@@ -2,16 +2,15 @@
 clc; clear all; close all; format compact;
 
 %% Load Data
-
 data = load('../data/warmup_train.mat');
 train = data.warmup_train;
 data = load('../data/warmup_test.mat');
 test = data.warmup_test;
+data = load('../data/warmup_valid.mat');
+valid = data.warmup_valid;
 clear data;
 
-
-%% Activity 1) - pinv() Solution
-%{
+%% WarmUp
 desc1.id = 1; %random pedagogical choice 1
 desc2.id = 2;
 desc3.id = 1;
@@ -52,6 +51,17 @@ for i = 1:length(desc3.uwords);
     desc3.a(i) = sum( strcmp(desc3.words, desc3.uwords{i}) );
     fprintf('%d = %s\n', desc3.a(i), desc3.uwords{i});
 end
+
+% Define common words that should be ignored in frequency matrix
+ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
+          'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
+          'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'};
+
+% remove the ignored words
+%ignore_indices = find(ismember(desc1.uwords, ignore));
+%desc1.uwords(ignore_indices) = [];
+%ignore_indices = find(ismember(desc2.uwords, ignore));
+%desc2.uwords(ignore_indices) = [];
 
 %combine word lists
 comb = [desc1.uwords, desc2.uwords];
@@ -117,9 +127,7 @@ b3 = test.SalaryNormalized(desc3.id);
 bhat = A3*xhat;
 
 disp(['Norm of b - bhat = ' num2str(norm(b3-bhat))])
-%}
 
-%% Activity 2) - Estimate Salary of Third Description
 
 %% LSE figure
 %{
@@ -138,28 +146,24 @@ ylabel('Normalized Salary','FontSize',fs); xlabel('Normalized Occurrences of `an
 set(gca,'FontSize',fs);
 %}
 
+%% Regularized SVD
 
-%% prep for Activity 5)
+%% Lasso Regularization
 
-
-
-% Number of data points
-N = 100;
-
+%loading data needed for this activity
 data = load('../activity_data/activity4.mat');
 train = data.train;
 test = data.test;
 
-% Grab every word as a keyword so we can cut down later
+% Grab every word in the description
 descTrain = train.FullDescription(1:N);
 descTest = test.FullDescription(1:N);
 
+%get the salary
 salaryTrain = train.SalaryNormalized(1:N);
 salaryTest = test.SalaryNormalized(1:N);
 
-
-
-tic
+%% Calculating the frequency matrix (A) of the data
 all_words = true;
 if all_words
     words = {'RemoveTheInitialWordFromwords'};
@@ -198,143 +202,49 @@ for ikeys = 1:nKeys;
         freq_matrixTrain(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTrain{idesc});
     end
 end
-
-
-
-
-% Get frequencies of keywords, or A matrix, of the train Set
-tic
-nKeys = length(keywords);
-freq_matrixTrain = zeros(N,nKeys);
-for ikeys = 1:nKeys;
-    a = strfind(descTrain,keywords{ikeys});
-    for idesc = 1:N;
-        freq_matrixTrain(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTrain{idesc});
-    end
-end
-
-toc
-
 %% Activity 5a) - Lasso Implementation
 
+% Initilize the two weight vectors xhat and xhat' to all zeros
 
-lambda = .1; 
-maxIter = 1e3;
-eps = 10^-3;
-A = freq_matrixTrain; b = salaryTrain;
-xhat = zeros(size(A,2),1);
-[u,s,v] = svd(A'*A);
-alpha = 1/s(1,1);
-delta = 10;
-iter = 0;
+% Take the SVD of the frequency matrix A
 
-while( iter < maxIter && delta > eps)
-    y = xhat + alpha*A'*(b-A*xhat);
-    xnext = sign(y) .* max([abs(y) - alpha*lambda,zeros(size(A,2),1)],[],2);
-    iter = iter+ 1;
+% Initilize alpha to 1/(largest eigen value of A)
+
+% Set delta, usually the norm of xhat and xhat', to a large initial value
+
+% Complete while loop
+while(delta == inf ) %% add conditions of loop
+   
+    %increase iteration number
+    
+    % set xhat to xhat';
+    
+    % compute y
+    
+    %compute xhat'
+   
+    % compute delta as the 2-norm of xhat and xhat'
     delta = norm(xnext - xhat);
-    xhat = xnext;
+    
 end
-if iter >= maxIter;
-    warning('MATLAB:LassoWarmup','Lasso exited at max iterations (%d) with delta %3.4f > eps %3.4f', maxIter, delta, eps);
-end;
 
-%Find and display key words by checking xhat values greater than eps
-[~,ind] = sort(xhat,'descend');
-for i = 1:30;
-    fprintf('%d (%d) @ %3.4f = [%s]\n', i, ind(i), xhat(ind(i)), keywords{ind(i)} );
-end
-%% Activity 5b) - using lasso with diferent lammbda values
+%% Activity 5b) - using lasso with different lambda values and finding 
+%                 words and erros
 
-% lambda = .001; maxIter = 1e4; %max its, delta 68, error 1e5
-% lambda = .00001; maxIter = 1e5; %max its, delat .7 error 1e5, 4.4min
-lambda = .1; maxIter = 1e3;
+
+% lambda = .001; 
+% lambda = .00001; maxIter = 1e5;
+lambda = .1; maxIter = 1e4;
 %N=300:
-% lambda = .01; maxIter = 1e4; % max its, delta 1513, error 2e5, 5.2 min
-% lambda = .001; maxIter = 1e5; %max its, delat 20, error 2e5, 32 min
+% lambda = .01; maxIter = 1e4;
+% lambda = .001; maxIter = 1e5;
 %N=500:
-% lambda = .1; maxIter = 1e3; %max its, delta 32940, error 3e5, 5 min
-eps = 10^-3;
-A = freq_matrixTrain; b = salaryTrain;
-xhat = zeros(size(A,2),1);
-[u,s,v] = svd(A'*A);
-alpha = 1/s(1,1);
-delta = 10;
-iter = 0;
-while( iter < maxIter && delta > eps)
-    y = xhat + alpha*A'*(b-A*xhat);
-    xnext = sign(y) .* max([abs(y) - alpha*lambda,zeros(size(A,2),1)],[],2);
-    iter = iter+ 1;
-    delta = norm(xnext - xhat);
-    xhat = xnext;
-end
-if iter >= maxIter;
-    warning('MATLAB:LassoWarmup','Lasso exited at max iterations (%d) with delta %3.4f > eps %3.4f', maxIter, delta, eps);
-end;
+% lambda = .1; maxIter = 1e3;
 
-%Find and display key words by checking xhat values greater than eps
-[~,ind] = sort(xhat,'descend');
-for i = 1:30;
-    fprintf('%d (%d) @ %3.4f = [%s]\n', i, ind(i), xhat(ind(i)), keywords{ind(i)} );
-end
+%% Activity 5c) - Experi
 
 
-%% Activity 5c) - 
-
-%% Activity 6a) - 
-
-%----Ahmed---- I need this, but it should be moved upwards
-% data = load('../data/activity_train.mat');
-% train = data.activity_train;
-% data = load('../data/activity_test.mat');
-% test = data.activity_test;
-
-% Predict the salary based only on the words 
-predSalaryTest = freq_matrixTest * xhat;
-
-%get error of predicted salary
-error = norm(predSalaryTest - salaryTest)
-[~,xinds] = sort(abs(xhat),'descend');
-plot(1:length(xhat),xinds,'.')
-toc
-%----Ahmed---- end section 5 stuff
-
-
-% Predict salaries of a Moder Major General and an EE Grad
-fid = fopen('majorGeneral.txt');
-major = ' ';
-for i = 1:37
-    major = strcat(major, fgetl(fid));
-end
-fclose(fid);
-
-fid = fopen('ee_resume.txt');
-eegrad = ' ';
-for i = 1:37
-    eegrad = strcat(eegrad, fgetl(fid));
-end
-fclose(fid);
-
-
-
-Amjr = zeros(1,nKeys);
-for i = 1:nKeys;
-    Amjr(i) = length( strfind(major, keywords{i}) ) / length(keywords{i}) / length(major);
-end
-
-Aeeg = zeros(1,nKeys);
-for i = 1:nKeys;
-    Aeeg(i) = length( strfind(eegrad, keywords{i}) ) / length(keywords{i}) / length(eegrad);
-end
-
-predMajor = Amjr * xhat
-predEEGrad = Aeeg * xhat
-
-%% Activity 6b) - 
-
-
-
-
-
-
+%% Ramifications
+Pb = A*A';
+Ps = A'*A;
 
