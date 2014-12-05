@@ -140,9 +140,6 @@ set(gca,'FontSize',fs);
 
 
 %% prep for Activity 5)
-
-
-
 % Number of data points
 N = 100;
 
@@ -198,9 +195,6 @@ for ikeys = 1:nKeys;
     end
 end
 
-
-
-
 % Get frequencies of keywords, or A matrix, of the train Set
 tic
 nKeys = length(keywords);
@@ -211,8 +205,6 @@ for ikeys = 1:nKeys;
         freq_matrixTrain(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTrain{idesc});
     end
 end
-
-
 
 % Get frequencies of keywords, or A matrix, of the test Set
 
@@ -228,10 +220,9 @@ toc
 
 %% Activity 5a) - Lasso Implementation
 
-
 lambda = .1; 
 maxIter = 1e3;
-eps = 10^-3;
+eps = 10^-5;
 A = freq_matrixTrain; b = salaryTrain;
 xhat = zeros(size(A,2),1);
 [u,s,v] = svd(A'*A);
@@ -265,7 +256,7 @@ lambda = .1; maxIter = 1e4;
 % lambda = .001; maxIter = 1e5; %max its, delat 20, error 2e5, 32 min
 %N=500:
 % lambda = .1; maxIter = 1e3; %max its, delta 32940, error 3e5, 5 min
-eps = 10^-3;
+eps = 10^-5;
 A = freq_matrixTrain; b = salaryTrain;
 xhat = zeros(size(A,2),1);
 [u,s,v] = svd(A'*A);

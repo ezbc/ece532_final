@@ -131,28 +131,28 @@ end
 %% Activity 5a) - Lasso Implementation
 lambda = .1; 
 maxIter = 1e3;
-eps = 10^-3;
+eps = 10^-5;
 
-% Initilize the two weight vectors xhat and xhat' to all zeros
+% Initilize the two weight vectors xhat and nextXhat to all zeros
 
 % Take the SVD of the frequency matrix A
 
 % Initilize alpha to 1/(largest eigen value of A)
 
-% Set delta, usually the norm of xhat and xhat', to a large initial value
+% Set delta, usually the norm of xhat and nextXhat, to a large initial value
 
 % Complete while loop
 % while( ) % add conditions of loop
    
     %increase iteration number
     
-    % set xhat to xhat';
+    % set xhat to nextXhat;
     
     % compute y
     
-    %compute xhat'
+    %compute nextXhat
    
-    % compute delta as the 2-norm of xhat and xhat'
+    % compute delta as the 2-norm of xhat and nextXhat
     delta = norm(xnext - xhat);
     
 % end
@@ -163,7 +163,7 @@ eps = 10^-3;
 
 % lambda = .001; 
 % lambda = .00001; maxIter = 1e5;
-lambda = .1; maxIter = 1e4;
+% lambda = .1; maxIter = 1e4;
 %N=300:
 % lambda = .01; maxIter = 1e4;
 % lambda = .001; maxIter = 1e5;
@@ -171,6 +171,8 @@ lambda = .1; maxIter = 1e4;
 % lambda = .1; maxIter = 1e3;
 
 %% Activity 5c) - Experimentation of choice of lamda
+
+
 
 %% Activity 6a)
 
