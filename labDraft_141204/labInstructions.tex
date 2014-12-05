@@ -28,11 +28,11 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     competition whose sponsor, Adzuna, had a database of job listings of which
     only half provided salary information (the winner received \$3000).  As
     applicants will more likely apply to descriptions that give a salary,
-    Adzuna's placement rate (and hence revenue) is improved if they can provide
+    Adzuna's placement rate (and hence Adzuna's) is improved if they can provide
     an estimated salary for those descriptions that did not originally include
     one. The employee recruiting business is structured so that Adzuna
     generally can't directly ask the companies to provide salary estimates.
-    This is challenging from the legal standpoint, as grossly incorrect
+    This is challenging from the legal standpoint, as grossly incorrect	
     salaries may expose Adzuna to claims from applicants and companies, and
     applicant experience, since Adzuna's estimates must seem plausible to
     applicants before they will be willing to spend the time applying.
@@ -162,8 +162,8 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \end{minipage}
     \end{center}
 
-    We can collect these word counts into the matrix $\bm{A}$, and the salaries
-    into the vector $\bm{b}$. $\bm{A}$ will have 2 rows, one for each
+    We can collect these word counts into matrix $\bm{A}$, and the salaries
+    into vector $\bm{b}$. $\bm{A}$ will have 2 rows, one for each
     description and as many columns as there are unique words between the two
     descriptions. $\bm{b}$ will have 2 rows, one salary for each description,
     and one column. $\bm{A}$ and $\bm{b}$ will look like the following
@@ -204,7 +204,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \begin{equation}
         \bm{\hat{x}} = (\bm{A}^{T}\bm{A})^{-1}\bm{A}^T\bm{b}
     \end{equation}
-    when $\bm{A}$ is positive semidefinite and invertible.
+    when $\bm{A}$ is positive semidefinite and, therefore, invertible.
     
     In cases when $\bm{A}$ is not positive semidefinite, as in the $\bm{A}$
     derived from the word counts above, we can use the right psuedo-inverse of
@@ -238,7 +238,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     of the descriptions; with only two samples it should not be surprising that
     the most heavily-weighted words are unique to each description.  But notice
     how some words are identically-weighted and that from these 11 `most
-    important' words, none of them are highly descriptive.
+    important' words, few of them are highly descriptive.
     
     % --------------------------------------------------------------------------
     % Activity 
@@ -247,9 +247,15 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         
         \fbox{\begin{minipage}{35em} {\bf \large Activity 1} \\ Construct the
                 above $\bm{A}$ and $\bm{b}$ matrices using the 1$^{\rm st}$ and
+<<<<<<< HEAD
                 2$^{\rm nd}$ descriptions in the warm-up train data,
                 activity1.mat. $\bm{A}$ should be a 2$\times m$ matrix where
                 $m$ is the number of unique words between the two
+=======
+                2$^{\rm nd}$ descriptions in \texttt{activity1.mat}.
+                $\bm{A}$ should be a 2$\times m$ matrix
+                where $m$ is the number of unique words between the two
+>>>>>>> 2d0684dddae8cba814aa8296efadd4cb7b53a31d
                 descriptions.  $\bm{b}$ should be a 2$\times$1 matrix. Can you
                 reproduce the above solution for $\bm{\hat{x}}$? Report on the
                 uniqueness of the solution for $\bm{\hat{x}}$ in this problem.
@@ -282,7 +288,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         coordination of revenue management processes and procedures. The
         Cluster Revenue Manager will drive the continued development and growth
         of customer service standards, revenue and profits from multiple hotels
-        and to deliver the company’s mission relating to profit, people,
+        and to deliver the company's mission relating to profit, people,
         customer and quality. You will currently be a Cluster Revenue Manager
         or a Regional/ Area Revenue Manager looking after a minimum of two
         propertys or a Revenue Manager in a large unit managing both rooms and
@@ -302,6 +308,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
             warm-up test data, from activity1.mat.  Since $\bm{\hat{x}}$ is a
             weighting of words from the first two descriptions, ignore any
             words that are unique to the third description.  \end{minipage} }
+        }
         
     \end{center}
     % --------------------------------------------------------------------------
@@ -420,11 +427,11 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     of words that we include our solution.
 
 % ------------------------------------------------------------------------------
-\section{The Lasso Method - Ahmed}
+\section{The Lasso Method}
 % ------------------------------------------------------------------------------
 
     One of the issues with predicting a job salary is choosing what key words
-    we should use to predict them. As we have seen, the number of words ever
+    we should use to predict them. As we have seen, the number of words even
     for small datasets used to construct frequency matrices and weighting
     solutions quickly grows out of hand. Fortunately, there are ways of
     automatically choosing what words we should choose in predicting the salary
@@ -498,6 +505,8 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     \begin{center} 
         
         \fbox{\begin{minipage}{35em}
+Add some visualization like \texttt{[\~,xinds] = sort(abs(xhat),'descend');}
+\texttt{plot(1:length(xhat),xinds,'.')}
 
             {\bf \large Activity 5a} \\
     
@@ -537,7 +546,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     % --------------------------------------------------------------------------
 
 
-\section{Using the Results...Ben}
+\section{Using the Results}
 We've seen that accurate salary prediction is a function of the algorithm and the size of the training set, and while there are many additional improvements, let's conclude by exploring some results of this analysis.
 
 Recall that the basic form of the least squares problem is $\bm{b = Ax}$.  We
@@ -550,18 +559,39 @@ were in predicting the correct salary.
 
 $\bm{A}$ is a linear operator, so if a particular applicant wants to make
 \$50,000, we can determine which words they should look for when reading
-descriptions by computing $\bm{sum(}\texttt{pinv}\bm{(A)50000,2)}$.  If the
+descriptions by computing $\bm{sum(}\texttt{pinv}\bm{(A)50000,2)}$.
+If the
 applicant includes these descriptive words in their objective statement or
-elsewhere in their resume, it is reasonable to expect that their application
+elsewhere in their resume, it seems reasonable to expect that their application
 will be successful (though this is a different - if similar - problem).  We can
 also use the $\bm{A}$ and $\bm{x}$ computed from the training data to analyze a
 resume and suggest what salary their resume implicitly seeks.
 
-clustering graph...
+    % --------------------------------------------------------------------------
+    % Activity 
+    % --------------------------------------------------------------------------
+    \begin{center} 
+        
+    \fbox{
+	\begin{minipage}{35em}
+	{\bf \large Activity 6a} \\
+The loaded data also contains the {Modern Major General's song} and a sample undergraduate electrical engineering resume as \texttt{majorGen} and \texttt{elecGrad}.
+Predict how much the Major General and EE grad would make if applying to jobs similar to those in the training set.\\
 
+	{\bf \large Activity 6b} \\
+The salaries fall substantially below the poverty line in any country; why is this the case?
+Compare the most important keywords against those contained in \texttt{majorGen} and \texttt{elecGrad}; it may help to consider how the predicted salary is computed.
+	\end{minipage}
+     }
+\end{center}
+    % --------------------------------------------------------------------------
+    % --------------------------------------------------------------------------
 
+It is beyond the scope of this lab to consider other machine learning strategies that may be more successful and/or faster in solving this problem, but having reached this point it's worth commenting that this method is easy to understand.
+That is, it's easy to inspect and debug and can give good results without heavily relying on statistical concepts.
+Achieving good results requires some tuning; even though the test salary prediction error was below [final error], it had difficult predicting the Major General and EE grad salaries.
+This difference is due to the differing writing styles between the job descriptions, Major General's song, and EE grad resume.
 
-\section{Conclusion}
 
 \end{document}
 
