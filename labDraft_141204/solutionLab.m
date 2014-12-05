@@ -302,13 +302,6 @@ plot(1:length(xhat),xinds,'.')
 
 %% Activity 6a) - 
 
-%----Ahmed---- I need this, but it should be moved upwards
-% data = load('../data/activity_train.mat');
-% train = data.activity_train;
-% data = load('../data/activity_test.mat');
-% test = data.activity_test;
-%----Ahmed---- end section 5 stuff
-
 
 % Predict salaries of a Moder Major General and an EE Grad
 fid = fopen('majorGeneral.txt');
