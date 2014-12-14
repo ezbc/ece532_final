@@ -2,17 +2,18 @@
 clc; clear all; close all; format compact;
 
 %% Load Data
-load('activity_data/activity1.mat');
+load('labData.mat');
 
 %% Activity 1
 % ------------------------------------------------------------------------------
-desc1.id = 1;
-desc2.id = 2;
-desc3.id = 1;
+fprintf('----Activity 1----\n');
+desc1.id = 1; %from the activity1 training set
+desc2.id = 2; %from the activity1 training set
+desc3.id = 1; %from the test set
 
 %count unique words
 fprintf('desc1:\n');
-desc1.words = strsplit(train.FullDescription{desc1.id});
+desc1.words = strsplit(data.activity1.train.desc{desc1.id});
 desc1.words = strrep(desc1.words, ',','');
 desc1.words = strrep(desc1.words, '.','');
 desc1.words = lower(desc1.words);
@@ -23,11 +24,29 @@ for i = 1:length(desc1.uwords);
     fprintf('%d = %s\n', desc1.a(i), desc1.uwords{i});
 end
 
-fprintf('desc2:\n');
-%...
+fprintf('\ndesc2:\n');
+desc2.words = strsplit(data.activity1.train.desc{desc2.id});
+desc2.words = strrep(desc2.words, ',','');
+desc2.words = strrep(desc2.words, '.','');
+desc2.words = lower(desc2.words);
+desc2.words = sort(desc2.words); 
+desc2.uwords = unique(desc2.words);
+for i = 1:length(desc2.uwords);
+    desc2.a(i) = sum( strcmp(desc2.words, desc2.uwords{i}) );
+    fprintf('%d = %s\n', desc2.a(i), desc2.uwords{i});
+end
 
-fprintf('desc3:\n');
-%...
+fprintf('\ndesc3:\n');
+desc3.words = strsplit(data.activity1.test.desc{desc3.id});
+desc3.words = strrep(desc3.words, ',','');
+desc3.words = strrep(desc3.words, '.','');
+desc3.words = lower(desc3.words);
+desc3.words = sort(desc3.words); 
+desc3.uwords = unique(desc3.words);
+for i = 1:length(desc3.uwords);
+    desc3.a(i) = sum( strcmp(desc3.words, desc3.uwords{i}) );
+    fprintf('%d = %s\n', desc3.a(i), desc3.uwords{i});
+end
 
 %combine word lists
 comb = [desc1.uwords, desc2.uwords];
@@ -49,46 +68,49 @@ for i = 1:length(comb);
 end
 [m,n] = size(A);
 
+fprintf('\nA = \n'); nA = 10;
+for i = 1:nA-1; fprintf('%d & ',A(1,i)); end; fprintf('%d\\cdots\\\\\n', A(1,nA));
+for i = 1:nA-1; fprintf('%d & ',A(2,i)); end; fprintf('%d\\cdots\n', A(2,nA));
+
 % Display the frequency table
-fprintf('\n\nFreq table 1\n')
+fprintf('\nFreq table 1\n')
 for i = 1:11;
-    %...
+    disp([desc1.uwords{i} ' & ' num2str(A(1,i)) ' \\'])
 end
-fprintf('\n\nFreq table 2\n')
+fprintf('\nFreq table 2\n')
 for i = 1:11;
-    %...
+    disp([desc2.uwords{i} ' & ' num2str(A(2,i)) ' \\'])
 end
+
+
 
 %% Activity 2
 % ------------------------------------------------------------------------------
 % Now predict salary of a new description
 %...
-
-disp(['Norm of b - bhat = ' num2str(norm(b3-bhat))])
+fprintf('\n\n----Activity 2----\n');
 
 %% Activity 3
 % ------------------------------------------------------------------------------
 
 %% Activity 4
 % ------------------------------------------------------------------------------
+fprintf('\n\n----Activity 4----\n');
 
 %% Activity 5
 % ------------------------------------------------------------------------------
-
-%loading data needed for this activity
-data = load('../activity_data/activity4.mat');
-train = data.train;
-test = data.test;
+% Number of data points
+N = 100;
 
 % Grab every word in the description
-descTrain = train.FullDescription(1:N);
-descTest = test.FullDescription(1:N);
+descTrain = data.activity4.train.desc(1:N);
+descTest = data.activity4.test.desc(1:N);
 
 %get the salary
-salaryTrain = train.SalaryNormalized(1:N);
-salaryTest = test.SalaryNormalized(1:N);
+salaryTrain = data.activity4.train.salary(1:N);
+salaryTest = data.activity4.test.salary(1:N);
 
-% Calculating the frequency matrix (A) of the data
+tic
 all_words = true;
 if all_words
     words = {'RemoveTheInitialWordFromwords'};
@@ -108,7 +130,8 @@ if all_words
     words = words(2:end); %remove the initial
     keywords = unique(words);
 end
-%remove the ignore words that probably dont contribute anything to the dataset.
+%remove the ignore words that probably dont contribute anything to the data
+%set.
 ignore = {'be' 'at' 'you' 'we' 'the' 'and' 'it' 'them' 'a' 'these' ...
           'those' 'with' 'can' 'for' 'an' 'is' 'or' 'of' 'are' 'has' 'have' ...
           'in' 'or' 'to' 'they' 'he' 'she' 'him' 'her' 'also'...
@@ -119,15 +142,37 @@ keywords = sort(keywords);
 
 %calculate the frequency matrix
 nKeys = length(keywords);
-freq_matrixTrain = zeros(N,nKeys);
+freqMatrixTrain = zeros(N,nKeys);
 for ikeys = 1:nKeys;
     a = strfind(descTrain,keywords{ikeys});
     for idesc = 1:N;
-        freq_matrixTrain(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTrain{idesc});
+        freqMatrixTrain(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTrain{idesc});
     end
 end
 
+% Get frequencies of keywords, or A matrix, of the train Set
+tic % time computation from here to toc
+nKeys = length(keywords);
+freqMatrixTrain = zeros(N,nKeys);
+for ikeys = 1:nKeys;
+    a = strfind(descTrain,keywords{ikeys});
+    for idesc = 1:N;
+        freqMatrixTrain(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTrain{idesc});
+    end
+end
+
+% Get frequencies of keywords, or A matrix, of the test Set
+freqMatrixTest = zeros(N,nKeys);
+for ikeys = 1:nKeys;
+    a = strfind(descTest,keywords{ikeys});
+    for idesc = 1:N;
+        freqMatrixTest(idesc, ikeys) = length(a{idesc}) / length(keywords{ikeys}) / length(descTest{idesc});
+    end
+end
+toc
+
 %% Activity 5a) - Lasso Implementation
+% ------------------------------------------------------------------------------
 lambda = .1; 
 maxIter = 1e3;
 eps = 10^-5;
@@ -149,15 +194,18 @@ eps = 10^-5;
     
     % compute y
     
-    %compute nextXhat
+    % compute nextXhat
    
     % compute delta as the 2-norm of xhat and nextXhat
-    delta = norm(xnext - xhat);
+
+    % delta = norm(xnext - xhat);
     
 % end
 
 %% Activity 5b) - using lasso with different lambda values and finding 
 %                 words and erros
+% ------------------------------------------------------------------------------
+fprintf('\n\n----Activity 5b----\n');
 
 
 % lambda = .001; 
@@ -169,26 +217,27 @@ eps = 10^-5;
 %N=500:
 % lambda = .1; maxIter = 1e3;
 
-%% Activity 5c) - Experimentation of choice of lamda
+%% Activity 5c) - Experimentation of choice of lambda
+% ------------------------------------------------------------------------------
+fprintf('\n\n----Activity 5c----\n');
 
-
-
-%% Activity 6a)
-
-% Predict salaries of a Moder Major General and an EE Grad
-fid = fopen('majorGeneral.txt');
-major = ' ';
-for i = 1:37
-    major = strcat(major, fgetl(fid));
+%% Activity 6a) - Predict salaries of a Moder Major General and an EE Grad
+% ------------------------------------------------------------------------------
+% Major general
+fprintf('\n\n----Activity 6a----\n');
+Amjr = zeros(1,nKeys);
+for i = 1:nKeys;
+    Amjr(i) = length( strfind(data.activity6.major, keywords{i}) ) / length(keywords{i}) / length(data.activity6.major);
 end
-fclose(fid);
 
-% ...and an EE Grad
-
-
-predMajor = Amjr * xhat
-predEEGrad = Aeeg * xhat
-
+% EE grad
+Aeeg = zeros(1,nKeys);
+for i = 1:nKeys;
+    Aeeg(i) = length( strfind(data.activity6.eengr, keywords{i}) ) / length(keywords{i}) / length(data.activity6.eengr);
+end
 
 %% Activity 6b)
+% ------------------------------------------------------------------------------
+fprintf('\n\n----Activity 6a----\n');
+
 

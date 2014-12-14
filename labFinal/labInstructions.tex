@@ -49,9 +49,9 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     word is a feature and as there are many descriptive words the resulting
     matrices will be sparse.  Other feature choices may be individual word
     length, occurrences of word pairs or triplets (i.e. ``technical
-    communication"), n-grams (sequences of n characters), and many others. It
-    is common to ignore stop words like ``the",``a",``it",``you",``we", etc.
-    because they add little information.
+    communication"), $n$-grams (sequences of $n$ characters), and many others.
+    It is common to ignore stop words like ``the",``a",``it",``you",``we",
+    etc.  because they add little information.
 
 % ------------------------------------------------------------------------------
 \section{Warm-Up}
@@ -103,7 +103,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         
             \includegraphics[width=\linewidth]{figLSE}
 
-            \caption{\label{fig:lse} Number of occurances of a word versus job
+            \caption{\label{fig:lse} Number of occurrences of a word versus job
             salary in blue dots, with a linear least squares fit.}
 
         \end{center}
@@ -190,7 +190,10 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         85000
         \end{bmatrix}
     \end{equation*}
-    with the first 2 corresponding to the two occurrences of `****k' in the first descripton and the later 1, 5 column to occurrences of `and' in both descriptions.
+
+    \noindent with the first 2 corresponding to the two occurrences of `****k'
+    in the first description and the later 1, 5 column to occurrences of `and'
+    in both descriptions.
 
 
     We can then set up our problem as 
@@ -214,7 +217,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
     when $\bm{A}$ is positive semidefinite and, therefore, invertible.
     
     In cases when $\bm{A}$ is not positive semidefinite, as in the $\bm{A}$
-    derived from the word counts above, we can use the right psuedo-inverse of
+    derived from the word counts above, we can use the right pseudo-inverse of
     $\bm{A}$.  In Matlab this is 
     
     \begin{equation} 
@@ -255,12 +258,15 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         \fbox{\begin{minipage}{35em} {\bf \large Activity 1} \\ 
                 
         Construct the above $\bm{A}$ and $\bm{b}$ matrices using the 1$^{\rm
-        st}$ and 2$^{\rm nd}$ descriptions in \texttt{activity1.mat}. A starter
-        code has been provided for you, \texttt{studentStarter.m}, which you
-        may use to help you start this activity and the following activities.
-        $\bm{A}$ should be a 2$\times m$ matrix where $m$ is the number of
-        unique words between the two descriptions.  $\bm{b}$ should be a
-        2$\times$1 matrix.  Can you reproduce the above solution for
+        st}$ and 2$^{\rm nd}$ descriptions. To load the data type
+        \texttt{load('labData.mat')}, which will load a variable
+        \texttt{data}.  \texttt{data} is a struct with individual activity
+        instances. Load the training data as \texttt{data.activity1.train}.  A
+        starter code has been provided for you, \texttt{studentStarter.m},
+        which you may use to help you start this activity and the following
+        activities.  $\bm{A}$ should be a 2$\times m$ matrix where $m$ is the
+        number of unique words between the two descriptions.  $\bm{b}$ should
+        be a 2$\times$1 matrix.  Can you reproduce the above solution for
         $\bm{\hat{x}}$? Report on the uniqueness of the solution for
         $\bm{\hat{x}}$ in this problem.  Support your conclusion.\\
             
@@ -294,7 +300,7 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
         and to deliver the company's mission relating to profit, people,
         customer and quality. You will currently be a Cluster Revenue Manager
         or a Regional/ Area Revenue Manager looking after a minimum of two
-        propertys or a Revenue Manager in a large unit managing both rooms and
+        properties or a Revenue Manager in a large unit managing both rooms and
         conference space. This job was originally posted as
         www.caterer.com/JobSeeking/ClusterRevenueManager_job****
     \end{lstlisting} having a salary of \$45,000.
@@ -308,10 +314,12 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
 
             {\bf \large Activity 2} \\ Use your solution for $\bm{\hat{x}}$ in
             Activity 1 to estimate the salary of the third description in the
-            warm-up test data, from activity1.mat.  Since $\bm{\hat{x}}$ is a
-            weighting of words from the first two descriptions, ignore any
-            words that are unique to the third description.  \end{minipage} 
-        }
+            warm-up test data, \texttt{data.activity1.test}.  Since
+            $\bm{\hat{x}}$ is a weighting of words from the first two
+            descriptions, ignore any words that are unique to the third
+            description.  
+
+            \end{minipage} }
         
     \end{center}
     % --------------------------------------------------------------------------
@@ -386,18 +394,17 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
 
             {\bf \large Activity 4} \\
             
-            Load the activity data, \texttt{activity4.mat}, which loads the
-            variables test and train, the testing and training datasets
-            respectively. With each data set construct a frequency matrix of
-            words, excluding common words you are confident will not be
-            important to a description's salary. Derive a linear least squares
-            solution for $\hat{\bm{x}}$ in Equation~\ref{eq:linsolve} with the
-            first 10 descriptions in the training set. Predict the salaries of
-            the first 10 descriptions in the test set. Report the $L_2$ norm of
-            the difference between the true salaries and predicted salaries for
-            the test set. Report the word which is best able to predict the
-            salary of a description. State whether this problem is over
-            determined or under determined.
+            Load the activity test and train, \texttt{data.activity4}. With
+            each data set construct a frequency matrix of words, excluding
+            common words you are confident will not be important to a
+            description's salary. Derive a linear least squares solution for
+            $\hat{\bm{x}}$ in Equation~\ref{eq:linsolve} with the first 10
+            descriptions in the training set. Predict the salaries of the first
+            10 descriptions in the test set. Report the $L_2$ norm of the
+            difference between the true salaries and predicted salaries for the
+            test set. Report the word which is best able to predict the salary
+            of a description. State whether this problem is over determined or
+            under determined.
 
             \end{minipage}
         }
@@ -606,19 +613,20 @@ Elijah Bernstein-Cooper, Ben Conrad, Ahmed Saif
 
 	    {\bf \large Activity 6a} \\
 	    
-        Load the text \texttt{majorGen.txt} contains the {Modern Major
-        General's song} and \texttt{elecGrad.txt} which contains a sample
-        undergraduate electrical engineering resume as \texttt{majorGen} and
-        \texttt{elecGrad}. Predict how much the Major General and EE grad would
-        make if applying to jobs similar to those in the training set.\\
+        Load the text \texttt{data.activity6.major} containing the {Modern
+        Major General's song} and \texttt{data.activity6.eengr} which contains
+        a sample undergraduate electrical engineering resume. Predict how much
+        the Major General and EE grad would make if applying to jobs similar to
+        those in the training set.\\
 
 	    {\bf \large Activity 6b} \\
 
-        The Major General's salary fell substantially below the poverty line in any country;
-        why is this the case?  Compare the most important keywords against
-        those contained in \texttt{majorGen} and \texttt{elecGrad}; it may help
-        to consider how the predicted salary is computed.
-	\end{minipage}}
+        The Major General's salary fell substantially below the poverty line in
+        any country; why is this the case?  Compare the most important keywords
+        against those contained in each of the texts; it may help to consider
+        how the predicted salary is computed.  
+
+    \end{minipage}}
 
     \end{center}
     % --------------------------------------------------------------------------
