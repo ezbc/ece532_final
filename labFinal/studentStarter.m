@@ -96,11 +96,8 @@ fprintf('\n\n----Activity 2----\n');
 %% Activity 4
 % ------------------------------------------------------------------------------
 fprintf('\n\n----Activity 4----\n');
-
-%% Activity 5
-% ------------------------------------------------------------------------------
 % Number of data points
-N = 100;
+N = 10;
 
 % Grab every word in the description
 descTrain = data.activity4.train.desc(1:N);
@@ -171,11 +168,18 @@ for ikeys = 1:nKeys;
 end
 toc
 
+%now predict....
+
+%% Activity 5 - Generate Frequency Matrix
+% ------------------------------------------------------------------------------
+% Now increase N...
+
+
 %% Activity 5a) - Lasso Implementation
 % ------------------------------------------------------------------------------
-lambda = .1; 
-maxIter = 1e3;
-eps = 10^-5;
+lambda = 10; 
+maxIteration = 1e3;
+eps = 10^-5; % error tolerance
 
 % Initilize the two weight vectors xhat and nextXhat to all zeros
 
@@ -199,23 +203,26 @@ eps = 10^-5;
     % compute delta as the 2-norm of xhat and nextXhat
 
     % delta = norm(xnext - xhat);
-    
 % end
 
-%% Activity 5b) - using lasso with different lambda values and finding 
-%                 words and erros
+% How'd we do?
+if curIteration >= maxIteration;
+    warning('MATLAB:LassoWarmup','Lasso exited at max iterations (%d) with delta %3.4f > eps %3.4f', curIteration, delta, eps);
+end
+
+%% Activity 5b) - Lasso With Different Lambda
 % ------------------------------------------------------------------------------
 fprintf('\n\n----Activity 5b----\n');
 
-
-% lambda = .001; 
+% Other options that can take much longer:
+%N=100:
 % lambda = .00001; maxIter = 1e5;
 % lambda = .1; maxIter = 1e4;
 %N=300:
 % lambda = .01; maxIter = 1e4;
-% lambda = .001; maxIter = 1e5;
+% lambda = .001; maxIter = 1e5; % 32 minutes
 %N=500:
-% lambda = .1; maxIter = 1e3;
+% lambda = .1; maxIter = 1e3; % 5 minutes
 
 %% Activity 5c) - Experimentation of choice of lambda
 % ------------------------------------------------------------------------------
